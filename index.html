@@ -88,6 +88,7 @@ section { padding: 80px 2rem; }
 .exam-card p { font-size: 13.5px; color: rgba(255,255,255,0.75); line-height: 1.6; }
 .exam-tag { display: inline-block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 3px 10px; border-radius: 20px; margin-top: 0.75rem; }
 .exam-tag-live { background: rgba(125,211,252,0.2); color: #7dd3fc; border: 1px solid rgba(125,211,252,0.35); }
+.exam-tag-live { background: rgba(212,237,218,0.2); color: #8fe3a8; border: 1px solid rgba(143,227,168,0.4); }
 .exam-tag-soon { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.55); }
 
 /* SERVICES */
@@ -147,7 +148,7 @@ footer span { color: rgba(255,255,255,0.65); font-weight: 500; }
         Explorar Apps
       </a>
       <a href="#about" class="btn-outline">Conocer Más</a>
-      <a href="#examen" class="btn-accent">Preparación de Examen</a>
+      <a href="#examen" class="btn-accent">Preparación de Reválida</a>
     </div>
   </div>
 </section>
@@ -226,24 +227,24 @@ footer span { color: rgba(255,255,255,0.65); font-weight: 500; }
 
       <div class="app-card">
         <div class="app-icon purple">
-          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#5c3d9e" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#5c3d9e" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
-          <h3>Recetario Digital</h3>
+          <h3>Notas de Enfermería</h3>
           <span class="app-tag tag-soon">Próximamente</span>
         </div>
-        <p>Herramienta de prescripción rápida para APRNs. Genera recetas formateadas con guías de dosificación e instrucciones para el paciente.</p>
+        <p>Herramienta para documentar notas de enfermería de forma rápida y organizada — narrativas, por excepción, o focalizadas (DAR/SOAP), adaptadas a distintos escenarios clínicos.</p>
       </div>
 
       <div class="app-card">
         <div class="app-icon green">
-          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#1a7a4a" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#1a7a4a" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 14l2 2 4-4"/></svg>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
-          <h3>Seguimiento de Pacientes</h3>
+          <h3>Proceso de Enfermería y Planes de Cuidado</h3>
           <span class="app-tag tag-soon">Próximamente</span>
         </div>
-        <p>Seguimiento del progreso del paciente, tendencias de signos vitales y horarios de seguimiento entre visitas. Diseñado para la práctica ambulatoria APRN.</p>
+        <p>Construye planes de cuidado completos siguiendo el proceso de enfermería — valoración, diagnósticos NANDA, objetivos, intervenciones (NIC) y evaluación (NOC).</p>
       </div>
 
       <div class="app-card">
@@ -263,22 +264,23 @@ footer span { color: rgba(255,255,255,0.65); font-weight: 500; }
 <!-- EXAM PREP -->
 <section id="examen">
   <div class="section-inner">
-    <div class="section-tag">Preparación de Examen</div>
+    <div class="section-tag">Preparación de Reválida</div>
     <div class="section-title">Estudia con Confianza</div>
     <p class="section-sub">Recursos de preparación para los exámenes de licenciatura y certificación más importantes en enfermería.</p>
     <div class="exam-grid">
       <div class="exam-card">
-        <h3>NCLEX-RN</h3>
-        <p>Preparación completa para el examen de licenciatura de enfermería registrada. Preguntas de práctica, estrategias y repaso de contenido.</p>
+        <h3>Reválida de Enfermería (NCLEX-RN)</h3>
+        <p>Examen diagnóstico de 32 preguntas alineado a las 8 categorías del plan de prueba. Identifica tus áreas de prioridad y recibe un plan de estudio personalizado.</p>
+        <span class="exam-tag exam-tag-live">● Disponible</span>
+        <div style="margin-top:0.75rem"><a href="examen-diagnostico/index.html" style="color:#7dd3fc;font-size:13px;font-weight:600;text-decoration:none">Comenzar diagnóstico →</a></div>
+      </div>
+      <div class="exam-card">
+        <h3>Reválida de Enfermería Práctica (NCLEX-PN)</h3>
+        <p>Recursos específicos para la reválida de enfermería práctica. Enfoque en las competencias esenciales del LPN/LVN.</p>
         <span class="exam-tag exam-tag-soon">Próximamente</span>
       </div>
       <div class="exam-card">
-        <h3>NCLEX-PN</h3>
-        <p>Recursos específicos para el examen de enfermería práctica. Enfoque en las competencias esenciales del LPN/LVN.</p>
-        <span class="exam-tag exam-tag-soon">Próximamente</span>
-      </div>
-      <div class="exam-card">
-        <h3>Certificación APRN</h3>
+        <h3>Certificación de Práctica Avanzada (APRN)</h3>
         <p>Preparación para certificaciones avanzadas: FNP-C, ACNP-BC, CNM, CRNA y más. Enfoque en farmacología y diagnóstico diferencial.</p>
         <span class="exam-tag exam-tag-soon">Próximamente</span>
       </div>
@@ -339,7 +341,7 @@ footer span { color: rgba(255,255,255,0.65); font-weight: 500; }
     <div class="contact-card">
       <div class="contact-item">
         <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-        contacto@enfermeriaenaccion.com
+        ocapella@gmail.com
       </div>
       <div class="contact-item">
         <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
