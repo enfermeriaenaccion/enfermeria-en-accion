@@ -22,6 +22,14 @@ body { font-family: system-ui, sans-serif; background: #f4f6f9; color: #1a1a2e; 
 .app-header span { font-size: 12px; opacity: 0.75; }
 .disclaimer-banner { background: #fff8e1; border-bottom: 1px solid #ffe082; padding: 8px 1.5rem; font-size: 12.5px; color: #7a5c00; }
 
+/* PATIENT BAR */
+.patient-bar { display: flex; gap: 8px; overflow-x: auto; padding: 10px 1.5rem; background: white; border-bottom: 1px solid #dde3ee; align-items: center; -webkit-overflow-scrolling: touch; }
+.patient-pill { flex-shrink: 0; display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 20px; border: 1.5px solid #dde3ee; background: #fafbfd; font-size: 13px; font-weight: 500; color: #5a6a80; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+.patient-pill.active { border-color: #1a4a7a; background: #eef3fb; color: #1a4a7a; }
+.patient-pill .del { font-size: 14px; color: #c0392b; line-height: 1; padding: 0 2px; }
+.btn-add-patient { flex-shrink: 0; display: flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: 20px; border: 1.5px dashed #1a4a7a; background: white; color: #1a4a7a; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.btn-add-patient:hover { background: #eef3fb; }
+
 /* LAYOUT */
 .container { max-width: 900px; margin: 0 auto; padding: 1.5rem; }
 .section-card { background: white; border-radius: 10px; border: 0.5px solid #dde3ee; margin-bottom: 1.25rem; overflow: hidden; }
@@ -179,6 +187,10 @@ body { font-family: system-ui, sans-serif; background: #f4f6f9; color: #1a1a2e; 
   </div>
 </div>
 <div class="disclaimer-banner">⚠️ <strong>Practice Tool Only</strong> — Not an official medical record. For educational purposes only.</div>
+
+<div class="patient-bar" id="patientBar">
+  <button class="btn-add-patient" id="btnAddPatient" onclick="addPatient()">+ Add Patient</button>
+</div>
 
 <div class="container">
 
@@ -414,8 +426,6 @@ function addMedRow(d={}){
   document.getElementById('med_body').appendChild(tr);
 }
 function upSS(sel){ const m={Continue:'status-cont',Discontinue:'status-dc',Modified:'status-mod',Hold:'status-hold',New:'status-new'}; sel.className=m[sel.value]||'status-cont'; }
-addMedRow(); addMedRow();
-
 function v(id){ return (document.getElementById(id)?.value||'').trim(); }
 function e(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
 function getMeds(){
@@ -426,18 +436,134 @@ function getMeds(){
 }
 function fld(label,val){ return `<div class="nv-field"><b>${e(label)}:</b> <span class="nv-val">${e(val||'Not documented')}</span></div>`; }
 
-function newPatient(){
-  if(!confirm('Clear all fields and start a new patient note?')) return;
-  document.querySelectorAll('.container input:not([type=range]),.container select,.container textarea').forEach(el=>{ if(el.tagName==='SELECT') el.selectedIndex=0; else el.value=''; });
-  document.getElementById('pain_slider').value=0; document.getElementById('pain_val').textContent='0';
-  const n=new Date();
-  document.getElementById('note_datetime').value=`${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}T${pad(n.getHours())}:${pad(n.getMinutes())}`;
-  HTT.forEach(s=>{ const btn=document.getElementById('wb_'+s.id),ta=document.getElementById(s.id); if(btn)btn.classList.remove('active'); if(ta){ta.classList.remove('wnl');ta.value='';} });
-  document.getElementById('med_body').innerHTML=''; mc=0; addMedRow(); addMedRow();
+/* ---------- MULTIPLE PATIENTS ---------- */
+const FIELD_IDS = [
+  'pt_name','pt_dob','pt_mrn','pt_room','pt_insurance','pt_code','aprn_name','aprn_role','collab_md','note_datetime','visit_type','encounter_setting',
+  's_complaint','s_hpi','pain_slider','s_pain_loc','s_pain_quality','s_allergies','s_pmh','s_fhx','s_shx',
+  'ros_const','ros_heent','ros_cv','ros_resp','ros_gi','ros_gu','ros_msk','ros_neuro','ros_psych','ros_skin','ros_endo','ros_heme','ros_allergy','ros_repro',
+  'v_bp','v_hr','v_rr','v_temp','v_spo2','v_weight','v_height','v_bmi','v_gcs','v_glucose','o_labs','o_iv','o_io',
+  'htt_gen','htt_neuro','htt_heent','htt_cv','htt_resp','htt_gi','htt_gu','htt_msk','htt_skin','htt_psych',
+  'med_otc','med_notes',
+  'a_ddx','a_dx','a_reasoning','a_response',
+  'p_orders','p_diag','p_interventions','p_edu','p_followup_time','p_referrals','p_followup','p_notes'
+];
+
+let patients = [];
+let activeIndex = 0;
+let pidCounter = 0;
+
+function makeBlankPatient(){
+  const wnl = {};
+  HTT.forEach(s=>wnl[s.id]=false);
+  return {
+    id: 'p'+(pidCounter++),
+    values: Object.fromEntries(FIELD_IDS.map(id=>[id, id==='pain_slider'?'0':''])),
+    wnl,
+    meds: [{},{}]
+  };
+}
+
+function saveCurrentToState(){
+  const p = patients[activeIndex];
+  if (!p) return;
+  FIELD_IDS.forEach(id=>{ p.values[id] = v(id); });
+  HTT.forEach(s=>{ p.wnl[s.id] = document.getElementById('wb_'+s.id).classList.contains('active'); });
+  p.meds = getMeds();
+}
+
+function loadStateToForm(p){
+  FIELD_IDS.forEach(id=>{
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = p.values[id] || (id==='pain_slider'?'0':'');
+  });
+  document.getElementById('pain_val').textContent = document.getElementById('pain_slider').value;
+
+  HTT.forEach(s=>{
+    const btn=document.getElementById('wb_'+s.id), ta=document.getElementById(s.id);
+    if (p.wnl[s.id]) { btn.classList.add('active'); ta.classList.add('wnl'); }
+    else { btn.classList.remove('active'); ta.classList.remove('wnl'); }
+  });
+
+  document.getElementById('med_body').innerHTML='';
+  mc=0;
+  (p.meds && p.meds.length ? p.meds : [{},{}]).forEach(m=>addMedRow(m));
+}
+
+function renderPatientBar(){
+  const bar = document.getElementById('patientBar');
+  bar.querySelectorAll('.patient-pill').forEach(el=>el.remove());
+  const addBtn = document.getElementById('btnAddPatient');
+  patients.forEach((p,i)=>{
+    const label = (p.values.pt_name && p.values.pt_name.trim()) ? p.values.pt_name.trim() : `Patient ${i+1}`;
+    const pill = document.createElement('div');
+    pill.className = 'patient-pill' + (i===activeIndex?' active':'');
+    const delHTML = patients.length>1 ? `<span class="del" onclick="event.stopPropagation();removePatient(${i})" title="Remove">×</span>` : '';
+    pill.innerHTML = `<span>${label.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>${delHTML}`;
+    pill.addEventListener('click', ()=>switchPatient(i));
+    bar.insertBefore(pill, addBtn);
+  });
+}
+
+function switchPatient(i){
+  if (i===activeIndex) return;
+  saveCurrentToState();
+  activeIndex = i;
+  loadStateToForm(patients[activeIndex]);
+  renderPatientBar();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function addPatient(){
+  saveCurrentToState();
+  const np = makeBlankPatient();
+  ['aprn_name','aprn_role','collab_md','note_datetime','visit_type','encounter_setting'].forEach(f=>{
+    np.values[f] = patients[activeIndex]?.values[f] || '';
+  });
+  patients.push(np);
+  activeIndex = patients.length-1;
+  loadStateToForm(np);
+  renderPatientBar();
   document.querySelectorAll('.collapsible').forEach(c=>c.classList.remove('hidden'));
   document.querySelectorAll('.section-toggle').forEach(t=>t.classList.add('open'));
   window.scrollTo({top:0,behavior:'smooth'});
 }
+
+function removePatient(i){
+  if (patients.length<=1) return;
+  if (!confirm('Remove this patient from the list? Their information will be lost.')) return;
+  const wasActive = (i===activeIndex);
+  patients.splice(i,1);
+  if (activeIndex>=patients.length) activeIndex = patients.length-1;
+  else if (i<activeIndex) activeIndex--;
+  if (wasActive) loadStateToForm(patients[activeIndex]);
+  renderPatientBar();
+}
+
+document.getElementById('pt_name').addEventListener('input', ()=>{
+  if (patients[activeIndex]) patients[activeIndex].values.pt_name = v('pt_name');
+  renderPatientBar();
+});
+
+/* ---------- CLEAR CURRENT PATIENT'S NOTE ---------- */
+function newPatient(){
+  if(!confirm('Clear this note and start over for this patient?')) return;
+  const carry = {};
+  ['aprn_name','aprn_role','collab_md','note_datetime','visit_type','encounter_setting'].forEach(f=>{ carry[f]=v(f); });
+  const blank = makeBlankPatient();
+  Object.assign(blank.values, carry);
+  patients[activeIndex] = blank;
+  loadStateToForm(blank);
+  renderPatientBar();
+  document.querySelectorAll('.collapsible').forEach(c=>c.classList.remove('hidden'));
+  document.querySelectorAll('.section-toggle').forEach(t=>t.classList.add('open'));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------- INIT ---------- */
+patients.push(makeBlankPatient());
+loadStateToForm(patients[0]);
+renderPatientBar();
 
 function closeNote(){
   document.getElementById('note-view').style.display='none';
