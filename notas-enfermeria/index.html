@@ -88,8 +88,18 @@ body { font-family: system-ui, sans-serif; background: #f4f6f9; color: #1a1a2e; 
 .btn-new-patient { background: white; color: #1a4a7a; border: 1.5px solid #1a4a7a; border-radius: 8px; padding: 12px 32px; font-size: 15px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; width: 100%; max-width: 320px; justify-content: center; }
 .btn-new-patient:hover, .btn-new-patient:active { background: #eef3fb; }
 .status-msg { font-size: 13px; color: #2e7d52; display: none; text-align: center; padding: 0 1rem; font-weight: 600; }
+.action-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.75rem; width:100%; max-width:520px; }
+.btn-action { border:1.5px solid #1a4a7a; background:white; color:#1a4a7a; border-radius:8px; padding:12px 14px; font-size:14px; font-weight:600; cursor:pointer; }
+.btn-action.primary { background:#1a4a7a; color:white; }
+.action-help { max-width:520px; font-size:12.5px; line-height:1.5; color:#5a6a80; text-align:center; }
+.preview-modal { position:fixed; inset:0; z-index:1000; display:none; background:rgba(10,25,45,.72); padding:1rem; }
+.preview-modal.open { display:flex; flex-direction:column; }
+.preview-toolbar { background:white; border-radius:12px 12px 0 0; padding:.75rem; display:flex; gap:.5rem; align-items:center; flex-wrap:wrap; }
+.preview-toolbar strong { flex:1; min-width:180px; color:#1a4a7a; }
+.preview-frame { width:100%; flex:1; border:0; background:white; border-radius:0 0 12px 12px; }
+.pdf-render { position:fixed; left:-10000px; top:0; width:794px; background:white; }
 
-@media(max-width:560px){ .choice-grid{ grid-template-columns: 1fr 1fr; } }
+@media(max-width:560px){ .choice-grid{ grid-template-columns: 1fr 1fr; } .action-grid{grid-template-columns:1fr;} .preview-modal{padding:.35rem;} }
 </style>
 </head>
 <body>
@@ -267,10 +277,11 @@ body { font-family: system-ui, sans-serif; background: #f4f6f9; color: #1a1a2e; 
   </div>
 
   <div class="footer-bar">
-    <button class="btn-generate" onclick="saveNote()">
-      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h4a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-      Guardar / Compartir Nota
-    </button>
+    <div class="action-grid">
+      <button class="btn-action" onclick="previewNote()">Vista previa</button>
+      <button class="btn-action primary" onclick="printNote()">Imprimir o guardar como PDF</button>
+    </div>
+    <p class="action-help">En la ventana de impresión selecciona <strong>Guardar como PDF</strong>. En móvil también podrás compartirlo o guardarlo en Archivos.</p>
     <button class="btn-new-patient" onclick="newNote()">
       <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
       Nueva Nota
@@ -278,6 +289,11 @@ body { font-family: system-ui, sans-serif; background: #f4f6f9; color: #1a1a2e; 
     <div class="status-msg" id="status_msg"></div>
   </div>
 
+</div>
+
+<div class="preview-modal" id="previewModal" role="dialog" aria-modal="true" aria-label="Vista previa de la nota">
+  <div class="preview-toolbar"><strong>Vista previa del informe</strong><button class="btn-action primary" onclick="printNote()">Imprimir o guardar como PDF</button><button class="btn-action" onclick="closePreview()">Cerrar</button></div>
+  <iframe class="preview-frame" id="previewFrame" title="Vista previa de la nota"></iframe>
 </div>
 
 <script>
@@ -308,7 +324,6 @@ function setupChoices(containerId, onSelect, defaultVal) {
     });
   });
 }
-
 setupChoices('situationChoices', val => {
   currentSituation = val;
   document.querySelectorAll('.situation-block').forEach(b => {
@@ -607,40 +622,46 @@ ${buildSituationHTML()}
 </body></html>`;
 }
 
-function saveNote(){
+function validateNote(){
   const ptName = v('pt_name'), nurseName = v('nurse_name');
-  if (!ptName) { alert('Por favor ingresa el Nombre del Paciente.'); return; }
-  if (!nurseName) { alert('Por favor ingresa el nombre del Enfermero/a.'); return; }
+  if (!ptName) { alert('Por favor ingresa el Nombre del Paciente.'); return false; }
+  if (!nurseName) { alert('Por favor ingresa el nombre del Enfermero/a.'); return false; }
 
   // validación básica del contenido según formato
-  if (currentFormat === 'narrativa' && !v('narrativa_texto')) { alert('Por favor escribe la nota narrativa.'); return; }
-  if (currentFormat === 'dar' && !v('dar_datos')) { alert('Por favor completa al menos la sección "Datos" (D).'); return; }
-  if (currentFormat === 'soap' && !v('soap_s')) { alert('Por favor completa al menos la sección "Subjetivo" (S).'); return; }
-
-  const fullHTML = buildReportHTML();
-  const date = new Date().toISOString().slice(0,10);
-  const filename = `Nota_${ptName.replace(/\s+/g,'_')}_${date}.html`;
-  const blob = new Blob([fullHTML], {type:'text/html'});
-  const file = new File([blob], filename, {type:'text/html'});
-  const msg = document.getElementById('status_msg');
-
-  if (navigator.canShare && navigator.canShare({files:[file]})) {
-    navigator.share({files:[file], title:filename, text:'Nota de Enfermería · Enfermería en Acción'})
-      .then(()=>{ msg.textContent='✓ Nota compartida/guardada'; msg.style.display='block'; setTimeout(()=>msg.style.display='none',4000); })
-      .catch(()=>{});
-    return;
-  }
-
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  setTimeout(()=>URL.revokeObjectURL(url), 1000);
-
-  msg.textContent = '✓ Nota descargada — revisa tu carpeta de Descargas';
-  msg.style.display = 'block';
-  setTimeout(()=>msg.style.display='none', 5000);
+  if (currentFormat === 'narrativa' && !v('narrativa_texto')) { alert('Por favor escribe la nota narrativa.'); return false; }
+  if (currentFormat === 'dar' && !v('dar_datos')) { alert('Por favor completa al menos la sección "Datos" (D).'); return false; }
+  if (currentFormat === 'soap' && !v('soap_s')) { alert('Por favor completa al menos la sección "Subjetivo" (S).'); return false; }
+  return true;
 }
+
+function reportFilename(){
+  const safeName = v('pt_name').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]+/g,'_').replace(/^_|_$/g,'') || 'Paciente';
+  const n = new Date();
+  return `Nota_Enfermeria_${safeName}_${n.getFullYear()}-${pad(n.getMonth()+1)}-${pad(n.getDate())}_${pad(n.getHours())}${pad(n.getMinutes())}.pdf`;
+}
+
+function showStatus(text, isError=false){
+  const msg = document.getElementById('status_msg');
+  msg.textContent = text; msg.style.color = isError ? '#c0392b' : '#2e7d52'; msg.style.display='block';
+  setTimeout(()=>msg.style.display='none',5000);
+}
+
+function previewNote(){
+  if(!validateNote()) return;
+  document.getElementById('previewFrame').srcdoc = buildReportHTML();
+  document.getElementById('previewModal').classList.add('open');
+}
+
+function closePreview(){ document.getElementById('previewModal').classList.remove('open'); }
+
+function printNote(){
+  if(!validateNote()) return;
+  const win=window.open('','_blank');
+  if(!win){ showStatus('Permite las ventanas emergentes para imprimir.',true); return; }
+  win.document.open(); win.document.write(buildReportHTML()); win.document.close();
+  win.onload=()=>{ win.focus(); win.print(); };
+}
+
 </script>
 </body>
 </html>
