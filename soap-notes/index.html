@@ -1,712 +1,405 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Enfermería en Acción</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: system-ui, sans-serif; background: #f4f6f9; color: #1a1a2e; font-size: 15px; }
+html { scroll-behavior: smooth; }
+body { font-family: system-ui, -apple-system, sans-serif; color: #1a1a2e; background: #fff; }
 
-/* DISCLAIMER */
-#disclaimer-screen { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
-.disclaimer-card { background: white; border-radius: 14px; padding: 2rem; max-width: 480px; width: 100%; }
-.disclaimer-card h2 { color: #c0392b; font-size: 17px; margin-bottom: 1rem; }
-.disclaimer-card p { font-size: 13.5px; color: #444; line-height: 1.7; margin-bottom: 0.75rem; }
-.btn-accept { background: #1a4a7a; color: white; border: none; border-radius: 8px; padding: 12px 24px; font-size: 15px; font-weight: 500; cursor: pointer; width: 100%; margin-top: 0.5rem; }
+/* NAV */
+nav { position: sticky; top: 0; background: white; border-bottom: 1px solid #e8edf5; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 64px; z-index: 100; }
+.nav-brand { font-size: 17px; font-weight: 700; color: #1a4a7a; }
+.nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+.nav-links a { font-size: 14px; color: #4a5a6a; text-decoration: none; font-weight: 500; }
+.nav-links a:hover { color: #1a4a7a; }
+.nav-cta { background: #1a4a7a; color: white !important; padding: 8px 18px; border-radius: 7px; }
+.nav-cta:hover { background: #153d68 !important; }
 
-/* HEADER */
-.app-header { background: #1a4a7a; color: white; padding: 1rem 1.5rem; display: flex; align-items: center; gap: 12px; }
-.app-header .brand { flex: 1; }
-.app-header h1 { font-size: 20px; font-weight: 700; }
-.app-header span { font-size: 12px; opacity: 0.75; }
-.disclaimer-banner { background: #fff8e1; border-bottom: 1px solid #ffe082; padding: 8px 1.5rem; font-size: 12.5px; color: #7a5c00; }
+/* HERO */
+.hero { background: linear-gradient(135deg, #0d2d4f 0%, #1a4a7a 55%, #1e6ab0 100%); color: white; padding: 100px 2rem 90px; text-align: center; }
+.hero-content { max-width: 740px; margin: 0 auto; }
+.hero-badge { display: inline-block; background: rgba(255,255,255,0.13); border: 1px solid rgba(255,255,255,0.22); border-radius: 20px; padding: 5px 18px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; margin-bottom: 1.5rem; text-transform: uppercase; }
+.hero h1 { font-size: clamp(30px, 5.5vw, 50px); font-weight: 700; line-height: 1.15; margin-bottom: 1.25rem; letter-spacing: -0.02em; }
+.hero h1 span { color: #7dd3fc; }
+.hero p { font-size: clamp(15px, 2.2vw, 18px); opacity: 0.87; line-height: 1.75; max-width: 580px; margin: 0 auto 2.5rem; }
+.hero-btns { display: flex; gap: 0.85rem; justify-content: center; flex-wrap: wrap; }
+.btn-primary { background: white; color: #1a4a7a; padding: 13px 26px; border-radius: 8px; font-size: 15px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 7px; transition: transform 0.15s, box-shadow 0.15s; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+.btn-outline { background: transparent; color: white; border: 1.5px solid rgba(255,255,255,0.45); padding: 13px 26px; border-radius: 8px; font-size: 15px; font-weight: 500; text-decoration: none; display: inline-flex; align-items: center; gap: 7px; transition: background 0.15s; }
+.btn-outline:hover { background: rgba(255,255,255,0.1); }
+.btn-accent { background: rgba(125,211,252,0.15); color: #7dd3fc; border: 1.5px solid rgba(125,211,252,0.4); padding: 13px 26px; border-radius: 8px; font-size: 15px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 7px; transition: background 0.15s; }
+.btn-accent:hover { background: rgba(125,211,252,0.25); }
 
-/* PATIENT BAR */
-.patient-bar { display: flex; gap: 8px; overflow-x: auto; padding: 10px 1.5rem; background: white; border-bottom: 1px solid #dde3ee; align-items: center; -webkit-overflow-scrolling: touch; }
-.patient-pill { flex-shrink: 0; display: flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 20px; border: 1.5px solid #dde3ee; background: #fafbfd; font-size: 13px; font-weight: 500; color: #5a6a80; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
-.patient-pill.active { border-color: #1a4a7a; background: #eef3fb; color: #1a4a7a; }
-.patient-pill .del { font-size: 14px; color: #c0392b; line-height: 1; padding: 0 2px; }
-.btn-add-patient { flex-shrink: 0; display: flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: 20px; border: 1.5px dashed #1a4a7a; background: white; color: #1a4a7a; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
-.btn-add-patient:hover { background: #eef3fb; }
+/* CTA BANNER */
+.cta-banner { background: linear-gradient(135deg, #1a4a7a, #2c5f9e); padding: 22px 2rem; }
+.cta-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; color: white; }
+.cta-text h3 { color: white; font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; }
+.cta-text p { color: rgba(255,255,255,0.85); font-size: 14px; }
+.cta-btn { background: white; color: #1a4a7a; padding: 12px 26px; border-radius: 8px; font-size: 15px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; transition: transform 0.15s, box-shadow 0.15s; }
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.18); }
 
-/* LAYOUT */
-.container { max-width: 900px; margin: 0 auto; padding: 1.5rem; }
-.section-card { background: white; border-radius: 10px; border: 0.5px solid #dde3ee; margin-bottom: 1.25rem; overflow: hidden; }
-.section-header { background: #eef3fb; border-bottom: 0.5px solid #dde3ee; padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
-.section-header h2 { font-size: 14px; font-weight: 500; color: #1a4a7a; flex: 1; }
-.section-badge { background: #1a4a7a; color: white; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
-.section-badge.aprn { background: #5c3d9e; }
-.section-body { padding: 1.25rem; }
-.section-toggle { font-size: 18px; color: #1a4a7a; transition: transform 0.2s; }
-.section-toggle.open { transform: rotate(180deg); }
-.collapsible.hidden { display: none; }
+/* LEVELS STRIP */
+.levels-strip { background: #f0f5ff; border-bottom: 1px solid #dde8f8; padding: 18px 2rem; text-align: center; }
+.levels-strip p { font-size: 13px; color: #4a5a7a; font-weight: 500; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+.levels-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+.level-pill { background: white; border: 1px solid #c8d8f0; color: #1a4a7a; font-size: 13px; font-weight: 500; padding: 5px 14px; border-radius: 20px; }
 
-/* FORM */
-.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
-.form-group { display: flex; flex-direction: column; gap: 5px; }
-.form-group label { font-size: 12px; color: #5a6a80; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
-.form-group input, .form-group select, .form-group textarea { border: 0.5px solid #c8d4e8; border-radius: 7px; padding: 8px 11px; font-size: 14px; color: #1a1a2e; background: #fafbfd; width: 100%; -webkit-appearance: none; appearance: none; }
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #1a4a7a; background: white; }
-.form-group textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
-.required-star { color: #c0392b; }
-.subsection-label { font-size: 12px; color: #5a6a80; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.75rem; }
+/* SECTION SHARED */
+section { padding: 80px 2rem; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.section-tag { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #1a4a7a; margin-bottom: 0.75rem; }
+.section-title { font-size: clamp(24px, 4vw, 36px); font-weight: 700; color: #0d1f35; line-height: 1.25; margin-bottom: 1rem; }
+.section-sub { font-size: 17px; color: #5a6a7a; line-height: 1.7; max-width: 560px; }
 
-/* VITALS */
-.vitals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; }
-.vital-box { background: #f4f7fc; border-radius: 8px; padding: 10px 12px; }
-.vital-box label { font-size: 11px; color: #5a6a80; font-weight: 500; display: block; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.04em; }
-.vital-box input { border: 0.5px solid #c8d4e8; border-radius: 6px; padding: 6px 9px; font-size: 14px; width: 100%; background: white; -webkit-appearance: none; }
+/* ABOUT */
+#about { background: #f8fafc; }
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-top: 3rem; }
+.about-text p { font-size: 16px; color: #4a5a6a; line-height: 1.8; margin-bottom: 1rem; }
+.about-pills { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.5rem; }
+.pill { background: #e8f0fb; color: #1a4a7a; font-size: 13px; font-weight: 500; padding: 5px 14px; border-radius: 20px; }
+.about-card { background: white; border-radius: 14px; border: 1px solid #e0e8f4; padding: 2rem; box-shadow: 0 4px 20px rgba(26,74,122,0.07); }
+.about-card h3 { font-size: 15px; font-weight: 600; color: #1a4a7a; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+.about-card ul { list-style: none; }
+.about-card ul li { font-size: 14px; color: #4a5a6a; padding: 7px 0; border-bottom: 0.5px solid #f0f4f8; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+.about-card ul li:last-child { border-bottom: none; }
+.check { color: #1a7a4a; font-size: 15px; flex-shrink: 0; }
 
-/* PAIN */
-.pain-row { display: flex; align-items: center; gap: 12px; }
-.pain-row input[type=range] { flex: 1; }
-.pain-val { font-size: 22px; font-weight: 500; color: #1a4a7a; min-width: 28px; }
-.pain-labels { display: flex; justify-content: space-between; font-size: 11px; color: #8a9ab0; margin-top: 2px; }
+/* APPS */
+#apps { background: white; }
+.apps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+.app-card { background: white; border-radius: 14px; border: 1px solid #e0e8f4; padding: 1.75rem; box-shadow: 0 2px 12px rgba(26,74,122,0.06); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
+.app-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(26,74,122,0.12); }
+.app-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; }
+.app-icon.blue   { background: #e8f0fb; }
+.app-icon.purple { background: #f0ebfc; }
+.app-icon.green  { background: #e8f7ef; }
+.app-icon.orange { background: #fef3e8; }
+.app-card h3 { font-size: 17px; font-weight: 600; color: #0d1f35; margin-bottom: 0.5rem; }
+.app-card p { font-size: 14px; color: #5a6a7a; line-height: 1.6; flex: 1; margin-bottom: 1.25rem; }
+.app-tag { display: inline-block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 3px 10px; border-radius: 20px; }
+.tag-live { background: #d4edda; color: #155724; }
+.tag-soon { background: #e8edf5; color: #4a5a7a; }
+.app-link { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: #1a4a7a; text-decoration: none; margin-top: 0.75rem; }
+.app-link:hover { text-decoration: underline; }
 
-/* ROS */
-.ros-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.85rem; }
-.ros-item { display: flex; flex-direction: column; gap: 5px; }
-.ros-item label { font-size: 12px; color: #5a6a80; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
-.ros-item textarea { border: 0.5px solid #c8d4e8; border-radius: 7px; padding: 7px 10px; font-size: 13.5px; min-height: 64px; resize: vertical; background: #fafbfd; width: 100%; }
-.ros-item textarea:focus { outline: none; border-color: #1a4a7a; background: white; }
+/* EXAM PREP */
+#examen { background: linear-gradient(135deg, #0d2d4f, #1a4a7a); color: white; text-align: center; }
+#examen .section-tag { color: #7dd3fc; }
+#examen .section-title { color: white; margin-bottom: 1rem; }
+#examen .section-sub { color: rgba(255,255,255,0.78); margin: 0 auto 2.5rem; }
+.exam-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-top: 2.5rem; text-align: left; }
+.exam-card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 1.5rem; }
+.exam-card h3 { font-size: 15px; font-weight: 600; color: #7dd3fc; margin-bottom: 0.5rem; }
+.exam-card p { font-size: 13.5px; color: rgba(255,255,255,0.75); line-height: 1.6; }
+.exam-tag { display: inline-block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 3px 10px; border-radius: 20px; margin-top: 0.75rem; }
+.exam-tag-live { background: rgba(125,211,252,0.2); color: #7dd3fc; border: 1px solid rgba(125,211,252,0.35); }
+.exam-tag-live { background: rgba(212,237,218,0.2); color: #8fe3a8; border: 1px solid rgba(143,227,168,0.4); }
+.exam-tag-soon { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.55); }
 
-/* HTT */
-.htt-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
-.htt-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
-.htt-item-header label { font-size: 12px; color: #5a6a80; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; display: flex; align-items: center; gap: 6px; }
-.system-dot { width: 8px; height: 8px; border-radius: 50%; background: #1a4a7a; display: inline-block; }
-.btn-wnl { font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; border: 0.5px solid #1a7a4a; color: #1a7a4a; background: white; cursor: pointer; }
-.btn-wnl.active { background: #1a7a4a; color: white; }
-.htt-item textarea { width: 100%; border: 0.5px solid #c8d4e8; border-radius: 7px; padding: 8px 11px; font-size: 13.5px; min-height: 70px; resize: vertical; background: #fafbfd; }
-.htt-item textarea.wnl { background: #f0faf4; border-color: #1a7a4a; color: #1a7a4a; font-style: italic; }
+/* SERVICES */
+#services { background: #f8fafc; }
+.services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+.service-card { background: white; border-radius: 12px; border: 1px solid #e0e8f4; padding: 1.5rem; }
+.service-icon { width: 40px; height: 40px; border-radius: 10px; background: #e8f0fb; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+.service-card h3 { font-size: 16px; font-weight: 600; color: #0d1f35; margin-bottom: 0.5rem; }
+.service-card p { font-size: 14px; color: #5a6a7a; line-height: 1.6; }
 
-/* MED TABLE */
-.med-table-wrap { overflow-x: auto; margin-bottom: 1rem; -webkit-overflow-scrolling: touch; }
-.med-table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 700px; }
-.med-table th { background: #eef3fb; color: #1a4a7a; font-size: 11px; font-weight: 500; text-transform: uppercase; padding: 8px 10px; border: 0.5px solid #dde3ee; text-align: left; }
-.med-table td { padding: 6px; border: 0.5px solid #eee; vertical-align: middle; }
-.med-table tr:nth-child(even) td { background: #fafbfd; }
-.med-table input, .med-table select { border: 0.5px solid #c8d4e8; border-radius: 5px; padding: 5px 7px; font-size: 13px; width: 100%; background: white; -webkit-appearance: none; }
-.status-cont { color: #1a7a4a; font-weight: 500; }
-.status-dc   { color: #c0392b; font-weight: 500; }
-.status-mod  { color: #c07800; font-weight: 500; }
-.status-hold { color: #7a4a1a; font-weight: 500; }
-.status-new  { color: #1a4a7a; font-weight: 500; }
-.btn-icd { margin-top: 8px; background: linear-gradient(135deg, #5c3d9e, #1a4a7a); color: white; border: none; border-radius: 7px; padding: 9px 16px; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; }
-.btn-icd:hover { opacity: 0.9; }
-.btn-icd:disabled { opacity: 0.6; cursor: not-allowed; }
-#icd-result { margin-top: 10px; display: none; }
-.icd-card { background: #f4f0fc; border: 0.5px solid #c9b8f0; border-radius: 9px; padding: 1rem; }
-.icd-card h4 { font-size: 12px; font-weight: 600; color: #5c3d9e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem; }
-.icd-row { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; border-bottom: 0.5px solid #ddd; }
-.icd-row:last-child { border-bottom: none; }
-.icd-code { font-weight: 700; color: #1a4a7a; font-size: 13px; min-width: 70px; font-family: monospace; }
-.icd-desc { font-size: 13px; color: #333; flex: 1; }
-.icd-confidence { font-size: 11px; padding: 2px 7px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
-.icd-high { background: #d4edda; color: #155724; }
-.icd-med  { background: #fff3cd; color: #856404; }
-.icd-low  { background: #f8d7da; color: #721c24; }
-.btn-use-icd { margin-top: 10px; background: #5c3d9e; color: white; border: none; border-radius: 6px; padding: 8px 16px; font-size: 13px; font-weight: 500; cursor: pointer; }
-.btn-use-icd:hover { background: #4a2d8a; }
-.icd-error { background: #fdeaea; border: 0.5px solid #f5c6cb; border-radius: 8px; padding: 10px 14px; font-size: 13px; color: #721c24; margin-top: 8px; }
-.btn-del-med { background: none; border: none; color: #c0392b; cursor: pointer; font-size: 18px; padding: 2px 6px; }
-.med-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 0.75rem; }
-.legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #5a6a80; }
-.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+/* CONTACT */
+#contact { background: #0d2d4f; color: white; text-align: center; }
+#contact .section-title { color: white; }
+#contact .section-sub { color: rgba(255,255,255,0.75); margin: 0 auto 2.5rem; }
+.contact-card { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15); border-radius: 14px; padding: 2.5rem; max-width: 560px; margin: 2rem auto 0; }
+.contact-item { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 15px; color: rgba(255,255,255,0.85); margin-bottom: 1rem; }
+.contact-item:last-child { margin-bottom: 0; }
 
 /* FOOTER */
-.footer-bar { text-align: center; padding: 2rem 1rem 3rem; display: flex; flex-direction: column; align-items: center; gap: 0.85rem; }
-.btn-generate { background: #1a4a7a; color: white; border: none; border-radius: 8px; padding: 14px 32px; font-size: 16px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; width: 100%; max-width: 320px; justify-content: center; }
-.btn-generate:hover, .btn-generate:active { background: #153d68; }
-.btn-new-patient { background: white; color: #1a4a7a; border: 1.5px solid #1a4a7a; border-radius: 8px; padding: 12px 32px; font-size: 15px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; width: 100%; max-width: 320px; justify-content: center; }
-.btn-new-patient:hover, .btn-new-patient:active { background: #eef3fb; }
-.status-msg { font-size: 13px; color: #2e7d52; display: none; text-align: center; padding: 0 1rem; }
+footer { background: #081829; color: rgba(255,255,255,0.45); text-align: center; padding: 1.5rem 2rem; font-size: 13px; }
+footer span { color: rgba(255,255,255,0.65); font-weight: 500; }
 
-/* NOTE VIEWER */
-#note-view { display: none; position: fixed; inset: 0; background: white; z-index: 2000; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-#note-view-inner { max-width: 700px; margin: 0 auto; padding: 1.5rem; font-family: Georgia, serif; font-size: 11pt; color: #111; line-height: 1.6; }
-.nv-topbar { position: sticky; top: 0; background: #1a4a7a; color: white; padding: 0.75rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 10px; z-index: 10; }
-.nv-topbar span { font-size: 14px; font-weight: 500; }
-.nv-topbar-btns { display: flex; gap: 8px; }
-.nv-btn { background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 6px; padding: 7px 14px; font-size: 13px; cursor: pointer; white-space: nowrap; }
-.nv-btn:hover { background: rgba(255,255,255,0.3); }
-.nv-hint { background: #e8f4fd; border: 1px solid #b3d9f5; border-radius: 8px; padding: 12px 16px; margin-bottom: 1.5rem; font-size: 13px; color: #1a4a7a; font-family: system-ui, sans-serif; line-height: 1.6; }
-.nv-brand { text-align: center; font-size: 20pt; font-weight: bold; color: #1a4a7a; font-family: Arial, sans-serif; padding-bottom: 8px; border-bottom: 2.5px solid #1a4a7a; margin-bottom: 6px; }
-.nv-subtitle { text-align: center; font-size: 11pt; color: #333; margin-bottom: 3px; }
-.nv-meta { text-align: center; font-size: 9.5pt; color: #666; margin-bottom: 5px; }
-.nv-disc { text-align: center; font-size: 8pt; color: #c0392b; font-weight: bold; margin-bottom: 16px; }
-.nv-section { font-size: 13pt; font-weight: bold; color: #1a4a7a; border-bottom: 1.5px solid #1a4a7a; margin-top: 20px; margin-bottom: 8px; padding-bottom: 3px; text-transform: uppercase; font-family: Arial, sans-serif; }
-.nv-sub { font-size: 10.5pt; font-weight: bold; color: #2c5f9e; margin-top: 10px; margin-bottom: 3px; font-family: Arial, sans-serif; }
-.nv-field { margin-bottom: 4px; font-size: 10pt; }
-.nv-field b { color: #000; }
-.nv-val { white-space: pre-wrap; word-break: break-word; }
-.nv-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 9pt; font-family: Arial, sans-serif; }
-.nv-table th { background: #dde8f5; color: #1a4a7a; padding: 5px 6px; border: 1px solid #aaa; font-weight: bold; text-align: left; }
-.nv-table td { padding: 4px 6px; border: 1px solid #ccc; vertical-align: top; }
-.nv-table tr:nth-child(even) td { background: #f5f8fc; }
-.nv-sig { margin-top: 28px; border-top: 1px solid #ccc; padding-top: 12px; font-size: 10pt; }
-.nv-footer { margin-top: 16px; font-size: 8pt; color: #c0392b; font-weight: bold; text-align: center; border-top: 1px solid #eee; padding-top: 8px; font-family: Arial, sans-serif; }
+/* RESPONSIVE */
+@media (max-width: 700px) {
+  nav { padding: 0 1rem; }
+  .nav-links { display: none; }
+  .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .hero { padding: 70px 1.25rem 60px; }
+  section { padding: 60px 1.25rem; }
+}
 </style>
 </head>
 <body>
 
-<!-- DISCLAIMER -->
-<div id="disclaimer-screen">
-  <div class="disclaimer-card">
-    <h2>⚠️ Important Disclaimer</h2>
-    <p><strong>This application is for educational and practice purposes only.</strong></p>
-    <p>This tool is <strong>not an official medical record system</strong> and should not replace a certified EHR or legally recognized documentation platform.</p>
-    <p>Documents generated carry <strong>no legal standing</strong> and should not be used for actual patient care, billing, or legal proceedings.</p>
-    <p>By continuing you acknowledge this is a <strong>practice and training tool only</strong>.</p>
-    <button class="btn-accept" onclick="document.getElementById('disclaimer-screen').style.display='none'">I Understand — Continue</button>
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Enfermería en Acción</div>
+  <ul class="nav-links">
+    <li><a href="#about">Nosotros</a></li>
+    <li><a href="#apps">Aplicaciones</a></li>
+    <li><a href="#examen">Preparación</a></li>
+    <li><a href="#services">Servicios</a></li>
+    <li><a href="#contact">Contacto</a></li>
+    <li><a href="#apps" class="nav-cta">Ver Apps →</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">Enfermería en Acción</div>
+    <h1>Donde la Enfermería se <span>Convierte en Acción</span></h1>
+    <p>Tu centro digital de herramientas clínicas, recursos educativos y preparación de exámenes — para enfermeros y estudiantes de todos los niveles.</p>
+    <div class="hero-btns">
+      <a href="#apps" class="btn-primary">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-3-3v6m-7 4h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        Explorar Apps
+      </a>
+      <a href="#about" class="btn-outline">Conocer Más</a>
+      <a href="#examen" class="btn-accent">Preparación de Reválida</a>
+    </div>
+  </div>
+</section>
+
+<!-- LEVELS STRIP -->
+<div class="levels-strip">
+  <p>Servimos a enfermeros y estudiantes de todos los niveles</p>
+  <div class="levels-list">
+    <span class="level-pill">Estudiantes de Enfermería</span>
+    <span class="level-pill">CNA</span>
+    <span class="level-pill">LPN / LVN</span>
+    <span class="level-pill">RN</span>
+    <span class="level-pill">BSN</span>
+    <span class="level-pill">MSN</span>
+    <span class="level-pill">NP</span>
+    <span class="level-pill">APRN</span>
+    <span class="level-pill">DNP</span>
   </div>
 </div>
 
-<!-- NOTE VIEWER (opens over the form) -->
-<div id="note-view">
-  <div class="nv-topbar">
-    <span>📄 Note Preview</span>
-    <div class="nv-topbar-btns">
-      <button class="nv-btn" onclick="printNote()">⬇ Guardar / Compartir Nota</button>
-      <button class="nv-btn" onclick="closeNote()">✕ Close</button>
-    </div>
-  </div>
-  <div id="note-view-inner"></div>
-</div>
-
-<!-- HEADER -->
-<div class="app-header">
-  <a href="/enfermeria-en-accion/" class="btn-home" title="Regresar al inicio">
-    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-  </a>
-  <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-3-3v6m-7 4h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-  <div class="brand">
-    <h1>Enfermería en Acción</h1>
-    <span>APRN Clinical SOAP Documentation</span>
-  </div>
-</div>
-<div class="disclaimer-banner">⚠️ <strong>Practice Tool Only</strong> — Not an official medical record. For educational purposes only.</div>
-
-<div class="patient-bar" id="patientBar">
-  <button class="btn-add-patient" id="btnAddPatient" onclick="addPatient()">+ Add Patient</button>
-</div>
-
-<div class="container">
-
-  <!-- Patient Info -->
-  <div class="section-card">
-    <div class="section-header" onclick="toggle(this)"><h2>Patient Information</h2><span class="section-badge">Required</span><span class="section-toggle open">▾</span></div>
-    <div class="section-body collapsible">
-      <div class="form-grid">
-        <div class="form-group"><label>Patient Name <span class="required-star">*</span></label><input id="pt_name" placeholder="Full name" /></div>
-        <div class="form-group"><label>Date of Birth</label><input id="pt_dob" type="date" /></div>
-        <div class="form-group"><label>MRN / Patient ID</label><input id="pt_mrn" placeholder="Medical record number" /></div>
-        <div class="form-group"><label>Room / Bed</label><input id="pt_room" placeholder="e.g. 304-B" /></div>
-        <div class="form-group"><label>Insurance / Payer</label><input id="pt_insurance" placeholder="e.g. Medicare, Aetna" /></div>
-        <div class="form-group"><label>Code Status</label>
-          <select id="pt_code"><option value="">— Select —</option><option>Full Code</option><option>DNR</option><option>DNI</option><option>DNR/DNI</option><option>Comfort Care</option></select></div>
-        <div class="form-group"><label>APRN Name <span class="required-star">*</span></label><input id="aprn_name" placeholder="Your name" /></div>
-        <div class="form-group"><label>Credential / Role</label><input id="aprn_role" placeholder="e.g. FNP-C, ACNP-BC" /></div>
-        <div class="form-group"><label>Collaborating Physician</label><input id="collab_md" placeholder="Collaborating physician" /></div>
-        <div class="form-group"><label>Date &amp; Time</label><input id="note_datetime" type="datetime-local" /></div>
-        <div class="form-group"><label>Visit Type</label>
-          <select id="visit_type"><option value="">— Select —</option><option>New Patient</option><option>Follow-Up</option><option>Acute / Urgent</option><option>Annual Wellness</option><option>Telehealth</option><option>Hospital Consult</option></select></div>
-        <div class="form-group"><label>Encounter Setting</label>
-          <select id="encounter_setting"><option value="">— Select —</option><option>Outpatient Clinic</option><option>Inpatient</option><option>ICU</option><option>ED</option><option>Home Health</option><option>Long-Term Care</option></select></div>
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="section-tag">Nosotros</div>
+    <div class="section-title">Conocimiento de Enfermería en Acción</div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>Enfermería en Acción fue creado por un Enfermero especialista con pasión por mejorar los flujos de trabajo clínicos mediante herramientas digitales diseñadas por y para enfermeras.</p>
+        <p>Nuestra misión es simple: desarrollar recursos prácticos que ayuden a los enfermeros en todos los niveles — desde estudiantes hasta APRNs — a documentar con mayor eficiencia, estudiar con efectividad y ejercer la práctica con confianza.</p>
+        <p>Todas las herramientas están diseñadas con la realidad clínica en mente — no por ingenieros que nunca han visto un paciente.</p>
+        <div class="about-pills">
+          <span class="pill">Diseño APRN</span>
+          <span class="pill">Notas SOAP</span>
+          <span class="pill">Educación Clínica</span>
+          <span class="pill">Herramientas Prácticas</span>
+          <span class="pill">ICD-10</span>
+          <span class="pill">Puerto Rico</span>
+        </div>
+      </div>
+      <div class="about-card">
+        <h3>
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#1a4a7a" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Nuestros Valores
+        </h3>
+        <ul>
+          <li><span class="check">✓</span>Herramientas basadas en experiencia clínica real</li>
+          <li><span class="check">✓</span>Para todos los niveles de enfermería</li>
+          <li><span class="check">✓</span>Accesibles en cualquier dispositivo, en cualquier lugar</li>
+          <li><span class="check">✓</span>Sin almacenamiento de datos del paciente</li>
+          <li><span class="check">✓</span>Mejoradas continuamente según la retroalimentación</li>
+          <li><span class="check">✓</span>Enfocadas en la educación y la práctica</li>
+        </ul>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- Subjective -->
-  <div class="section-card">
-    <div class="section-header" onclick="toggle(this)"><h2>S — Subjective</h2><span class="section-badge">SOAP</span><span class="section-toggle open">▾</span></div>
-    <div class="section-body collapsible">
-      <div class="form-grid" style="margin-bottom:1rem">
-        <div class="form-group" style="grid-column:1/-1"><label>Chief Complaint <span class="required-star">*</span></label><textarea id="s_complaint" placeholder="Patient's main complaint…"></textarea></div>
-        <div class="form-group" style="grid-column:1/-1"><label>History of Present Illness</label><textarea id="s_hpi" placeholder="Onset, duration, character, severity…" style="min-height:100px"></textarea></div>
+<!-- APPS -->
+<section id="apps">
+  <div class="section-inner">
+    <div class="section-tag">Nuestras Herramientas</div>
+    <div class="section-title">Aplicaciones Clínicas</div>
+    <p class="section-sub">Herramientas web que funcionan en cualquier dispositivo — iPhone, iPad, Android o computadora. Sin descargas requeridas.</p>
+    <div class="apps-grid">
+      <div class="app-card" style="border-color:#1a4a7a;box-shadow:0 4px 20px rgba(26,74,122,0.12)">
+        <div class="app-icon" style="background:#e8f0fb">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#1a4a7a" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
+          <h3>Examen Diagnóstico NCLEX-RN</h3>
+          <span class="app-tag tag-live">● Disponible</span>
+        </div>
+        <p>32 preguntas alineadas a las 8 categorías del plan de prueba. Recibe tu perfil de desempeño por área y un plan de estudio personalizado para tu reválida.</p>
+        <a href="examen-diagnostico/index.html" class="app-link" target="_blank" rel="noopener noreferrer">Comenzar diagnóstico →</a>
       </div>
-      <div class="form-group" style="margin-bottom:1rem">
-        <label>Pain Scale (0–10)</label>
-        <div class="pain-row"><input type="range" min="0" max="10" value="0" id="pain_slider" oninput="document.getElementById('pain_val').textContent=this.value"/><span class="pain-val" id="pain_val">0</span></div>
-        <div class="pain-labels"><span>0 No pain</span><span>5 Moderate</span><span>10 Worst</span></div>
-      </div>
-      <div class="form-grid" style="margin-bottom:1.25rem">
-        <div class="form-group"><label>Pain Location</label><input id="s_pain_loc" placeholder="e.g. lower back" /></div>
-        <div class="form-group"><label>Pain Quality</label><input id="s_pain_quality" placeholder="e.g. sharp, dull" /></div>
-        <div class="form-group" style="grid-column:1/-1"><label>Allergies</label><input id="s_allergies" placeholder="Agent — Reaction, or NKDA" /></div>
-        <div class="form-group" style="grid-column:1/-1"><label>Past Medical / Surgical / Psychiatric History</label><textarea id="s_pmh" placeholder="Diagnoses, surgeries, hospitalizations…"></textarea></div>
-        <div class="form-group"><label>Family History</label><textarea id="s_fhx" placeholder="Relevant family conditions…"></textarea></div>
-        <div class="form-group"><label>Social History</label><textarea id="s_shx" placeholder="Tobacco, alcohol, occupation…"></textarea></div>
-      </div>
-      <p class="subsection-label">Review of Systems</p>
-      <div class="ros-grid">
-        <div class="ros-item"><label>Constitutional</label><textarea id="ros_const" placeholder="Fever, chills, fatigue…"></textarea></div>
-        <div class="ros-item"><label>HEENT</label><textarea id="ros_heent" placeholder="Headache, vision, hearing…"></textarea></div>
-        <div class="ros-item"><label>Cardiovascular</label><textarea id="ros_cv" placeholder="Chest pain, palpitations…"></textarea></div>
-        <div class="ros-item"><label>Respiratory</label><textarea id="ros_resp" placeholder="Dyspnea, cough, wheezing…"></textarea></div>
-        <div class="ros-item"><label>Gastrointestinal</label><textarea id="ros_gi" placeholder="Nausea, vomiting, pain…"></textarea></div>
-        <div class="ros-item"><label>Genitourinary</label><textarea id="ros_gu" placeholder="Dysuria, frequency…"></textarea></div>
-        <div class="ros-item"><label>Musculoskeletal</label><textarea id="ros_msk" placeholder="Joint pain, stiffness…"></textarea></div>
-        <div class="ros-item"><label>Neurological</label><textarea id="ros_neuro" placeholder="Dizziness, weakness…"></textarea></div>
-        <div class="ros-item"><label>Psychiatric</label><textarea id="ros_psych" placeholder="Anxiety, depression…"></textarea></div>
-        <div class="ros-item"><label>Skin / Integumentary</label><textarea id="ros_skin" placeholder="Rashes, lesions…"></textarea></div>
-        <div class="ros-item"><label>Endocrine</label><textarea id="ros_endo" placeholder="Polyuria, polydipsia…"></textarea></div>
-        <div class="ros-item"><label>Hematologic / Lymphatic</label><textarea id="ros_heme" placeholder="Easy bruising, bleeding…"></textarea></div>
-        <div class="ros-item"><label>Allergic / Immunologic</label><textarea id="ros_allergy" placeholder="Seasonal allergies…"></textarea></div>
-        <div class="ros-item"><label>Reproductive / OB-GYN</label><textarea id="ros_repro" placeholder="LMP, gravida/para…"></textarea></div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Objective -->
-  <div class="section-card">
-    <div class="section-header" onclick="toggle(this)"><h2>O — Objective</h2><span class="section-badge">SOAP</span><span class="section-toggle open">▾</span></div>
-    <div class="section-body collapsible">
-      <p class="subsection-label">Vital Signs</p>
-      <div class="vitals-grid" style="margin-bottom:1.25rem">
-        <div class="vital-box"><label>BP (mmHg)</label><input id="v_bp" placeholder="120/80" /></div>
-        <div class="vital-box"><label>HR (bpm)</label><input id="v_hr" type="number" placeholder="72" /></div>
-        <div class="vital-box"><label>RR (/min)</label><input id="v_rr" type="number" placeholder="16" /></div>
-        <div class="vital-box"><label>Temp (°F)</label><input id="v_temp" type="number" step="0.1" placeholder="98.6" /></div>
-        <div class="vital-box"><label>SpO₂ (%)</label><input id="v_spo2" type="number" placeholder="98" /></div>
-        <div class="vital-box"><label>Weight (kg)</label><input id="v_weight" type="number" step="0.1" placeholder="72.5" /></div>
-        <div class="vital-box"><label>Height (cm)</label><input id="v_height" type="number" placeholder="170" /></div>
-        <div class="vital-box"><label>BMI</label><input id="v_bmi" placeholder="Auto or manual" /></div>
-        <div class="vital-box"><label>GCS</label><input id="v_gcs" type="number" min="3" max="15" placeholder="3–15" /></div>
-        <div class="vital-box"><label>Blood Glucose</label><input id="v_glucose" placeholder="102 mg/dL" /></div>
+      <div class="app-card">
+        <div class="app-icon blue">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#1a4a7a" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-3-3v6m-7 4h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
+          <h3>Notas SOAP – APRN</h3>
+          <span class="app-tag tag-live">● Disponible</span>
+        </div>
+        <p>Documentación clínica a nivel APRN con formato SOAP, examen físico céfalo-caudal, conciliación de medicamentos, revisión por sistemas y exportación a PDF.</p>
+        <a href="soap-notes/index.html" class="app-link" target="_blank" rel="noopener noreferrer">Abrir Aplicación →</a>
       </div>
-      <div class="form-grid">
-        <div class="form-group" style="grid-column:1/-1"><label>Labs &amp; Diagnostics</label><textarea id="o_labs" placeholder="CBC, CMP, HbA1c, imaging…"></textarea></div>
-        <div class="form-group" style="grid-column:1/-1"><label>IV Access / Lines / Devices</label><input id="o_iv" placeholder="e.g. 18G PIV right AC" /></div>
-        <div class="form-group" style="grid-column:1/-1"><label>Intake &amp; Output</label><input id="o_io" placeholder="e.g. I: 800 mL / O: 600 mL" /></div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Head-to-Toe -->
-  <div class="section-card">
-    <div class="section-header" onclick="toggle(this)"><h2>Head-to-Toe Physical Exam</h2><span class="section-badge">Assessment</span><span class="section-toggle open">▾</span></div>
-    <div class="section-body collapsible">
-      <p style="font-size:13px;color:#5a6a80;margin-bottom:1rem;">Tap <strong>WNL</strong> to mark a system as Within Normal Limits.</p>
-      <div class="htt-grid" id="htt-grid"></div>
-    </div>
-  </div>
+      <div class="app-card">
+        <div class="app-icon purple">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#5c3d9e" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
+          <h3>Notas de Enfermería</h3>
+          <span class="app-tag tag-live">● Disponible</span>
+        </div>
+        <p>Documenta notas de enfermería en varios formatos — Narrativa, Focalizada (DAR) o SOAP básica — con plantillas para cambio de turno (SBAR), admisión y medicamentos administrados. Soporta múltiples pacientes por turno.</p>
+        <a href="notas-enfermeria/index.html" class="app-link" target="_blank" rel="noopener noreferrer">Abrir Aplicación →</a>
+      </div>
 
-  <!-- Medication Reconciliation -->
-  <div class="section-card">
-    <div class="section-header" onclick="toggle(this)"><h2>Medication Reconciliation</h2><span class="section-badge aprn">APRN</span><span class="section-toggle open">▾</span></div>
-    <div class="section-body collapsible">
-      <div class="med-table-wrap">
-        <table class="med-table">
-          <thead><tr>
-            <th style="width:150px">Medication</th><th style="width:85px">Dose</th><th style="width:75px">Route</th>
-            <th style="width:115px">Frequency</th><th style="width:130px">Indication</th>
-            <th style="width:95px">Prescriber</th><th style="width:95px">Status</th>
-            <th style="width:130px">Notes</th><th style="width:32px"></th>
-          </tr></thead>
-          <tbody id="med_body"></tbody>
-        </table>
+      <div class="app-card">
+        <div class="app-icon green">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#1a7a4a" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2M9 14l2 2 4-4"/></svg>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
+          <h3>Planes de Cuidado (Asistente IA)</h3>
+          <span class="app-tag tag-live">● Disponible</span>
+        </div>
+        <p>Asistente conversacional que guía a estudiantes paso a paso en la construcción de planes de cuidado — valoración, diagnósticos NANDA, objetivos, intervenciones (NIC) y evaluación (NOC).</p>
+        <a href="https://chatgpt.com/g/g-6856201502fc81919b8ffea3e156ae2e-planes-de-cuidado" class="app-link" target="_blank" rel="noopener">Abrir Asistente →</a>
       </div>
-      <button class="btn-add-med" onclick="addMedRow()">+ Add Medication</button>
-      <div class="med-legend">
-        <div class="legend-item"><div class="legend-dot" style="background:#1a7a4a"></div>Continue</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#c0392b"></div>Discontinue</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#c07800"></div>Modified</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#7a4a1a"></div>Hold</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#1a4a7a"></div>New</div>
+
+      <div class="app-card">
+        <div class="app-icon purple">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#5c3d9e" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l3.586-3.586z"/></svg>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
+          <h3>Entrevista a Paciente (Simulación)</h3>
+          <span class="app-tag tag-live">● Disponible</span>
+        </div>
+        <p>Asistente conversacional que simula a un paciente para practicar la entrevista clínica y la recolección de datos — ideal para desarrollar habilidades de comunicación antes de la práctica real.</p>
+        <a href="https://chatgpt.com/g/g-69f21baefd648191a9bc9a4326216929-clinical-simulation-partner" class="app-link" target="_blank" rel="noopener">Abrir Asistente →</a>
       </div>
-      <div class="form-grid" style="margin-top:1.25rem">
-        <div class="form-group" style="grid-column:1/-1"><label>OTC / Herbal / Supplements</label><input id="med_otc" placeholder="e.g. Vitamin D, fish oil…" /></div>
-        <div class="form-group" style="grid-column:1/-1"><label>Reconciliation Notes</label><textarea id="med_notes" placeholder="Adherence, barriers, counseling…"></textarea></div>
+
+      <div class="app-card">
+        <div class="app-icon orange">
+          <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#c07800" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
+          <h3>Referencia Clínica</h3>
+          <span class="app-tag tag-soon">Próximamente</span>
+        </div>
+        <p>Guía de referencia clínica de acceso rápido — dosificación de medicamentos, valores de laboratorio, criterios diagnósticos y apoyo a decisiones clínicas.</p>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- Assessment -->
-  <div class="section-card">
-    <div class="section-header" onclick="toggle(this)"><h2>A — Assessment</h2><span class="section-badge">SOAP</span><span class="section-toggle open">▾</span></div>
-    <div class="section-body collapsible">
-      <div class="form-grid">
-        <div class="form-group" style="grid-column:1/-1"><label>Differential Diagnoses</label><textarea id="a_ddx" placeholder="List differentials with reasoning…"></textarea></div>
-        <div class="form-group" style="grid-column:1/-1"><label>Primary Diagnoses / ICD-10 <span class="required-star">*</span></label><textarea id="a_dx" placeholder="e.g. J18.9 – CAP; E11.65 – T2DM…" style="min-height:90px"></textarea></div>
-        <div class="form-group" style="grid-column:1/-1"><label>Clinical Reasoning &amp; MDM</label><textarea id="a_reasoning" placeholder="Rationale, complexity, risk…" style="min-height:90px"></textarea></div>
-        <div class="form-group" style="grid-column:1/-1"><label>Patient Response to Treatment</label><textarea id="a_response" placeholder="Changes since last visit…"></textarea></div>
+<!-- EXAM PREP -->
+<section id="examen">
+  <div class="section-inner">
+    <div class="section-tag">Preparación de Reválida</div>
+    <div class="section-title">Estudia con Confianza</div>
+    <p class="section-sub">Recursos de preparación para los exámenes de licenciatura y certificación más importantes en enfermería.</p>
+    <div class="exam-grid">
+      <div class="exam-card">
+        <h3>Reválida de Enfermería (NCLEX-RN)</h3>
+        <p>Examen diagnóstico de 32 preguntas alineado a las 8 categorías del plan de prueba. Identifica tus áreas de prioridad y recibe un plan de estudio personalizado.</p>
+        <span class="exam-tag exam-tag-live">● Disponible</span>
+        <div style="margin-top:0.75rem"><a href="examen-diagnostico/index.html" target="_blank" rel="noopener noreferrer" style="color:#7dd3fc;font-size:13px;font-weight:600;text-decoration:none">Comenzar diagnóstico →</a></div>
+      </div>
+
+      <div class="exam-card">
+        <h3>Asistente de Estudio (IA)</h3>
+        <p>Asistente conversacional para repasar contenido, hacer preguntas de práctica y aclarar dudas — útil tanto para la reválida como para tus cursos.</p>
+        <span class="exam-tag exam-tag-live">● Disponible</span>
+        <div style="margin-top:0.75rem"><a href="https://chatgpt.com/g/g-oZdXDCQXE-estudia-enfermeria" target="_blank" rel="noopener" style="color:#7dd3fc;font-size:13px;font-weight:600;text-decoration:none">Abrir Asistente →</a></div>
+      </div>
+      <div class="exam-card">
+        <h3>Reválida de Enfermería Práctica (NCLEX-PN)</h3>
+        <p>Recursos específicos para la reválida de enfermería práctica. Enfoque en las competencias esenciales del LPN/LVN.</p>
+        <span class="exam-tag exam-tag-soon">Próximamente</span>
+      </div>
+      <div class="exam-card">
+        <h3>Certificación de Práctica Avanzada (APRN)</h3>
+        <p>Preparación para certificaciones avanzadas: FNP-C, ACNP-BC, CNM, CRNA y más. Enfoque en farmacología y diagnóstico diferencial.</p>
+        <span class="exam-tag exam-tag-soon">Próximamente</span>
+      </div>
+      <div class="exam-card">
+        <h3>Repaso Clínico</h3>
+        <p>Módulos de repaso por sistemas — cardiovascular, respiratorio, neurológico, endocrino y más. Para todos los niveles.</p>
+        <span class="exam-tag exam-tag-soon">Próximamente</span>
       </div>
     </div>
   </div>
+</section>
 
-  <!-- Plan -->
-  <div class="section-card">
-    <div class="section-header" onclick="toggle(this)"><h2>P — Plan</h2><span class="section-badge">SOAP</span><span class="section-toggle open">▾</span></div>
-    <div class="section-body collapsible">
-      <div class="form-grid">
-        <div class="form-group" style="grid-column:1/-1"><label>New Orders / Prescriptions</label><textarea id="p_orders" placeholder="Medications, dosing, duration…"></textarea></div>
-        <div class="form-group" style="grid-column:1/-1"><label>Diagnostic Orders</label><textarea id="p_diag" placeholder="Labs, imaging, referrals…"></textarea></div>
-        <div class="form-group" style="grid-column:1/-1"><label>Interventions &amp; Procedures</label><textarea id="p_interventions" placeholder="Procedures, wound care…"></textarea></div>
-        <div class="form-group" style="grid-column:1/-1"><label>Patient / Family Education</label><textarea id="p_edu" placeholder="Topics taught, teach-back…"></textarea></div>
-        <div class="form-group"><label>Follow-Up Timeframe</label><input id="p_followup_time" placeholder="e.g. 2 weeks, PRN" /></div>
-        <div class="form-group"><label>Referrals / Consults</label><input id="p_referrals" placeholder="e.g. Cardiology, PT" /></div>
-        <div class="form-group" style="grid-column:1/-1"><label>Ongoing Plan &amp; Goals</label><textarea id="p_followup" placeholder="Goals, pending results…"></textarea></div>
-        <div class="form-group" style="grid-column:1/-1"><label>Additional Notes</label><textarea id="p_notes" placeholder="Any other relevant information…"></textarea></div>
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-inner">
+    <div class="section-tag">Servicios</div>
+    <div class="section-title">Cómo Podemos Ayudarte</div>
+    <p class="section-sub">Más allá de las herramientas, ofrecemos servicios profesionales para apoyar a la comunidad de enfermería.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#1a4a7a" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+        </div>
+        <h3>Consulta Clínica</h3>
+        <p>Consulta a nivel APRN para casos complejos, orientación en documentación y apoyo a la práctica profesional.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#1a4a7a" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        </div>
+        <h3>Educación en Enfermería</h3>
+        <p>Recursos educativos y materiales de capacitación para estudiantes y profesionales de todos los niveles de enfermería.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#1a4a7a" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </div>
+        <h3>Herramientas Personalizadas</h3>
+        <p>¿Necesitas una herramienta de documentación personalizada para tu práctica o institución? Desarrollamos soluciones a medida.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">
+          <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#1a4a7a" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        </div>
+        <h3>Revisión de Documentación</h3>
+        <p>Revisión y optimización de flujos de trabajo de documentación clínica para mejorar la eficiencia y el cumplimiento normativo.</p>
       </div>
     </div>
   </div>
+</section>
 
-  <div class="footer-bar">
-    <button class="btn-generate" onclick="buildNote()">
-      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-3-3v6m-7 4h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-      Preview &amp; Save Note
-    </button>
-    <button class="btn-new-patient" onclick="newPatient()">
-      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-      New Patient
-    </button>
-    <div class="status-msg" id="status_msg"></div>
-  </div>
-</div>
-
-<script>
-function toggle(h) {
-  h.nextElementSibling.classList.toggle('hidden');
-  h.querySelector('.section-toggle').classList.toggle('open');
-}
-const pad = n => String(n).padStart(2,'0');
-const now = new Date();
-document.getElementById('note_datetime').value =
-  `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
-
-// HTT
-const HTT = [
-  {id:'htt_gen',   label:'General Appearance',        ph:'A&O ×?, NAD, well-developed…'},
-  {id:'htt_neuro', label:'Neurological',               ph:'LOC, orientation, pupils, CN, strength…'},
-  {id:'htt_heent', label:'Head / Eyes / ENT',          ph:'Normocephalic, PERRL, TMs intact…'},
-  {id:'htt_cv',    label:'Cardiovascular',             ph:'RRR, S1/S2, no murmurs, no edema…'},
-  {id:'htt_resp',  label:'Respiratory',                ph:'CTA bilaterally, no adventitious sounds…'},
-  {id:'htt_gi',    label:'Gastrointestinal',           ph:'Soft, NT/ND, normoactive BS ×4…'},
-  {id:'htt_gu',    label:'Genitourinary',              ph:'No CVA tenderness, urine clear…'},
-  {id:'htt_msk',   label:'Musculoskeletal',            ph:'Full ROM, 5/5 strength, normal gait…'},
-  {id:'htt_skin',  label:'Skin / Integumentary',       ph:'Warm, dry, intact; no rashes…'},
-  {id:'htt_psych', label:'Psychosocial / Psychiatric', ph:'Appropriate mood/affect, no SI/HI…'},
-];
-const WNL = {
-  htt_gen:   'Well-developed, well-nourished, alert and oriented ×4, in no acute distress.',
-  htt_neuro: 'Alert and oriented ×4. Cranial nerves II–XII grossly intact. Motor strength 5/5 throughout. Sensation intact. Reflexes 2+ symmetric. No focal deficits.',
-  htt_heent: 'Normocephalic, atraumatic. PERRL, EOMs intact. TMs clear bilaterally. Nares patent. Oropharynx clear. No cervical lymphadenopathy.',
-  htt_cv:    'Regular rate and rhythm. S1 and S2 present, no murmurs, rubs, or gallops. Peripheral pulses 2+ bilaterally. No peripheral edema. Cap refill < 2 sec.',
-  htt_resp:  'Lungs clear to auscultation bilaterally. No wheezes, crackles, or rhonchi. Respirations unlabored.',
-  htt_gi:    'Abdomen soft, non-tender, non-distended. Normoactive bowel sounds ×4. No organomegaly, guarding, or rigidity.',
-  htt_gu:    'No costovertebral angle tenderness bilaterally. Urine output adequate.',
-  htt_msk:   'Full range of motion in all extremities. Muscle strength 5/5 bilaterally. Normal gait. No joint swelling or deformity.',
-  htt_skin:  'Warm, dry, and intact. Normal turgor. No rashes, lesions, wounds, or pressure injuries.',
-  htt_psych: 'Appropriate mood and affect. Thought process linear. No suicidal or homicidal ideation. Cooperative.',
-};
-(function(){
-  const g = document.getElementById('htt-grid');
-  HTT.forEach(s => {
-    const d = document.createElement('div'); d.className = 'htt-item';
-    d.innerHTML = `<div class="htt-item-header"><label><span class="system-dot"></span>${s.label}</label><button class="btn-wnl" id="wb_${s.id}" onclick="toggleWNL('${s.id}')">WNL</button></div><textarea id="${s.id}" placeholder="${s.ph}"></textarea>`;
-    g.appendChild(d);
-  });
-})();
-function toggleWNL(id) {
-  const ta=document.getElementById(id), btn=document.getElementById('wb_'+id);
-  if(btn.classList.contains('active')){ btn.classList.remove('active'); ta.classList.remove('wnl'); ta.value=''; }
-  else { btn.classList.add('active'); ta.classList.add('wnl'); ta.value=WNL[id]||'Within normal limits.'; }
-}
-
-// Meds
-let mc=0;
-const ROUTES=['PO','IV','IM','SQ','SL','Topical','Inhaled','PR','Transdermal','Nasal','Ophthalmic','Otic'];
-const FREQS=['Once daily','Twice daily','Three times daily','Four times daily','Every 4h','Every 6h','Every 8h','Every 12h','Weekly','Monthly','PRN','Continuous','Other'];
-function addMedRow(d={}){
-  const id=mc++, sm={Continue:'status-cont',Discontinue:'status-dc',Modified:'status-mod',Hold:'status-hold',New:'status-new'};
-  const tr=document.createElement('tr'); tr.id=`mr_${id}`;
-  tr.innerHTML=`<td><input type="text" placeholder="Drug name" value="${d.name||''}"/></td><td><input type="text" placeholder="e.g. 10 mg" value="${d.dose||''}"/></td><td><select>${ROUTES.map(r=>`<option ${d.route===r?'selected':''}>${r}</option>`).join('')}</select></td><td><select>${FREQS.map(f=>`<option ${d.freq===f?'selected':''}>${f}</option>`).join('')}</select></td><td><input type="text" placeholder="Indication" value="${d.indication||''}"/></td><td><input type="text" placeholder="Prescriber" value="${d.prescriber||''}"/></td><td><select onchange="upSS(this)" class="${sm[d.status||'Continue']}">${['Continue','Discontinue','Modified','Hold','New'].map(s=>`<option ${(d.status||'Continue')===s?'selected':''}>${s}</option>`).join('')}</select></td><td><input type="text" placeholder="Notes" value="${d.notes||''}"/></td><td><button class="btn-del-med" onclick="document.getElementById('mr_${id}').remove()">×</button></td>`;
-  document.getElementById('med_body').appendChild(tr);
-}
-function upSS(sel){ const m={Continue:'status-cont',Discontinue:'status-dc',Modified:'status-mod',Hold:'status-hold',New:'status-new'}; sel.className=m[sel.value]||'status-cont'; }
-function v(id){ return (document.getElementById(id)?.value||'').trim(); }
-function e(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
-function getMeds(){
-  return Array.from(document.querySelectorAll('#med_body tr')).map(tr=>{
-    const i=tr.querySelectorAll('input,select');
-    return {name:i[0]?.value||'',dose:i[1]?.value||'',route:i[2]?.value||'',freq:i[3]?.value||'',indication:i[4]?.value||'',prescriber:i[5]?.value||'',status:i[6]?.value||'',notes:i[7]?.value||''};
-  }).filter(m=>m.name.trim());
-}
-function fld(label,val){ return `<div class="nv-field"><b>${e(label)}:</b> <span class="nv-val">${e(val||'Not documented')}</span></div>`; }
-
-/* ---------- MULTIPLE PATIENTS ---------- */
-const FIELD_IDS = [
-  'pt_name','pt_dob','pt_mrn','pt_room','pt_insurance','pt_code','aprn_name','aprn_role','collab_md','note_datetime','visit_type','encounter_setting',
-  's_complaint','s_hpi','pain_slider','s_pain_loc','s_pain_quality','s_allergies','s_pmh','s_fhx','s_shx',
-  'ros_const','ros_heent','ros_cv','ros_resp','ros_gi','ros_gu','ros_msk','ros_neuro','ros_psych','ros_skin','ros_endo','ros_heme','ros_allergy','ros_repro',
-  'v_bp','v_hr','v_rr','v_temp','v_spo2','v_weight','v_height','v_bmi','v_gcs','v_glucose','o_labs','o_iv','o_io',
-  'htt_gen','htt_neuro','htt_heent','htt_cv','htt_resp','htt_gi','htt_gu','htt_msk','htt_skin','htt_psych',
-  'med_otc','med_notes',
-  'a_ddx','a_dx','a_reasoning','a_response',
-  'p_orders','p_diag','p_interventions','p_edu','p_followup_time','p_referrals','p_followup','p_notes'
-];
-
-let patients = [];
-let activeIndex = 0;
-let pidCounter = 0;
-
-function makeBlankPatient(){
-  const wnl = {};
-  HTT.forEach(s=>wnl[s.id]=false);
-  return {
-    id: 'p'+(pidCounter++),
-    values: Object.fromEntries(FIELD_IDS.map(id=>[id, id==='pain_slider'?'0':''])),
-    wnl,
-    meds: [{},{}]
-  };
-}
-
-function saveCurrentToState(){
-  const p = patients[activeIndex];
-  if (!p) return;
-  FIELD_IDS.forEach(id=>{ p.values[id] = v(id); });
-  HTT.forEach(s=>{ p.wnl[s.id] = document.getElementById('wb_'+s.id).classList.contains('active'); });
-  p.meds = getMeds();
-}
-
-function loadStateToForm(p){
-  FIELD_IDS.forEach(id=>{
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.value = p.values[id] || (id==='pain_slider'?'0':'');
-  });
-  document.getElementById('pain_val').textContent = document.getElementById('pain_slider').value;
-
-  HTT.forEach(s=>{
-    const btn=document.getElementById('wb_'+s.id), ta=document.getElementById(s.id);
-    if (p.wnl[s.id]) { btn.classList.add('active'); ta.classList.add('wnl'); }
-    else { btn.classList.remove('active'); ta.classList.remove('wnl'); }
-  });
-
-  document.getElementById('med_body').innerHTML='';
-  mc=0;
-  (p.meds && p.meds.length ? p.meds : [{},{}]).forEach(m=>addMedRow(m));
-}
-
-function renderPatientBar(){
-  const bar = document.getElementById('patientBar');
-  bar.querySelectorAll('.patient-pill').forEach(el=>el.remove());
-  const addBtn = document.getElementById('btnAddPatient');
-  patients.forEach((p,i)=>{
-    const label = (p.values.pt_name && p.values.pt_name.trim()) ? p.values.pt_name.trim() : `Patient ${i+1}`;
-    const pill = document.createElement('div');
-    pill.className = 'patient-pill' + (i===activeIndex?' active':'');
-    const delHTML = patients.length>1 ? `<span class="del" onclick="event.stopPropagation();removePatient(${i})" title="Remove">×</span>` : '';
-    pill.innerHTML = `<span>${label.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>${delHTML}`;
-    pill.addEventListener('click', ()=>switchPatient(i));
-    bar.insertBefore(pill, addBtn);
-  });
-}
-
-function switchPatient(i){
-  if (i===activeIndex) return;
-  saveCurrentToState();
-  activeIndex = i;
-  loadStateToForm(patients[activeIndex]);
-  renderPatientBar();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function addPatient(){
-  saveCurrentToState();
-  const np = makeBlankPatient();
-  ['aprn_name','aprn_role','collab_md','note_datetime','visit_type','encounter_setting'].forEach(f=>{
-    np.values[f] = patients[activeIndex]?.values[f] || '';
-  });
-  patients.push(np);
-  activeIndex = patients.length-1;
-  loadStateToForm(np);
-  renderPatientBar();
-  document.querySelectorAll('.collapsible').forEach(c=>c.classList.remove('hidden'));
-  document.querySelectorAll('.section-toggle').forEach(t=>t.classList.add('open'));
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function removePatient(i){
-  if (patients.length<=1) return;
-  if (!confirm('Remove this patient from the list? Their information will be lost.')) return;
-  const wasActive = (i===activeIndex);
-  patients.splice(i,1);
-  if (activeIndex>=patients.length) activeIndex = patients.length-1;
-  else if (i<activeIndex) activeIndex--;
-  if (wasActive) loadStateToForm(patients[activeIndex]);
-  renderPatientBar();
-}
-
-document.getElementById('pt_name').addEventListener('input', ()=>{
-  if (patients[activeIndex]) patients[activeIndex].values.pt_name = v('pt_name');
-  renderPatientBar();
-});
-
-/* ---------- CLEAR CURRENT PATIENT'S NOTE ---------- */
-function newPatient(){
-  if(!confirm('Clear this note and start over for this patient?')) return;
-  const carry = {};
-  ['aprn_name','aprn_role','collab_md','note_datetime','visit_type','encounter_setting'].forEach(f=>{ carry[f]=v(f); });
-  const blank = makeBlankPatient();
-  Object.assign(blank.values, carry);
-  patients[activeIndex] = blank;
-  loadStateToForm(blank);
-  renderPatientBar();
-  document.querySelectorAll('.collapsible').forEach(c=>c.classList.remove('hidden'));
-  document.querySelectorAll('.section-toggle').forEach(t=>t.classList.add('open'));
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-/* ---------- INIT ---------- */
-patients.push(makeBlankPatient());
-loadStateToForm(patients[0]);
-renderPatientBar();
-
-function closeNote(){
-  document.getElementById('note-view').style.display='none';
-  document.body.style.overflow='';
-}
-
-function printNote(){
-  const inner = document.getElementById('note-view-inner').innerHTML;
-  const ptName = v('pt_name') || 'paciente';
-  const date = new Date().toISOString().slice(0,10);
-
-  const fullHTML = `<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>SOAP – ${ptName} – ${date}</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; color: #111; padding: 2cm; line-height: 1.6; }
-  .nv-hint { display: none; }
-  .nv-brand { text-align: center; font-size: 22pt; font-weight: bold; color: #1a4a7a; padding-bottom: 8px; border-bottom: 2.5px solid #1a4a7a; margin-bottom: 6px; }
-  .nv-subtitle { text-align: center; font-size: 12pt; color: #333; margin-bottom: 4px; }
-  .nv-meta { text-align: center; font-size: 10pt; color: #666; margin-bottom: 5px; }
-  .nv-disc { text-align: center; font-size: 8pt; color: #c0392b; font-weight: bold; margin-bottom: 18px; }
-  .nv-section { font-size: 13pt; font-weight: bold; color: #1a4a7a; border-bottom: 1.5px solid #1a4a7a; margin-top: 22px; margin-bottom: 8px; padding-bottom: 3px; text-transform: uppercase; }
-  .nv-sub { font-size: 11pt; font-weight: bold; color: #2c5f9e; margin-top: 12px; margin-bottom: 4px; }
-  .nv-field { margin-bottom: 5px; font-size: 10.5pt; }
-  .nv-val { white-space: pre-wrap; word-break: break-word; }
-  .nv-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 9.5pt; }
-  .nv-table th { background: #dde8f5; color: #1a4a7a; padding: 6px 7px; border: 1px solid #aaa; font-weight: bold; text-align: left; }
-  .nv-table td { padding: 5px 7px; border: 1px solid #ccc; vertical-align: top; }
-  .nv-table tr:nth-child(even) td { background: #f5f8fc; }
-  .nv-sig { margin-top: 32px; border-top: 1px solid #ccc; padding-top: 12px; font-size: 10.5pt; }
-  .nv-footer { margin-top: 18px; font-size: 8pt; color: #c0392b; font-weight: bold; text-align: center; border-top: 1px solid #eee; padding-top: 8px; }
-</style>
-</head>
-<body>${inner}</body>
-</html>`;
-
-  // Encode as data URI and open in same tab — works everywhere including local files
-  const encoded = 'data:text/html;charset=utf-8,' + encodeURIComponent(fullHTML);
-  const a = document.createElement('a');
-  a.href = encoded;
-  a.download = `SOAP_${ptName.replace(/\s+/g,'_')}_${date}.html`;
-  a.style.display = 'none';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-}
-
-function buildNote(){
-  const ptName=v('pt_name'), aprnName=v('aprn_name');
-  if(!ptName)   { alert('Please enter Patient Name.'); return; }
-  if(!aprnName) { alert('Please enter APRN Name.'); return; }
-  if(!v('s_complaint')){ alert('Please enter Chief Complaint.'); return; }
-  if(!v('a_dx')){ alert('Please enter Primary Diagnoses.'); return; }
-
-  const dtStr=(()=>{ const d=document.getElementById('note_datetime').value; return d?new Date(d).toLocaleString('en-US',{dateStyle:'long',timeStyle:'short'}):new Date().toLocaleString(); })();
-  const dobStr=(()=>{ const d=v('pt_dob'); return d?new Date(d+'T12:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}):'—'; })();
-  const pain=document.getElementById('pain_slider').value;
-  const meds=getMeds();
-  const rosRows=[
-    ['Constitutional',v('ros_const')],['HEENT',v('ros_heent')],['Cardiovascular',v('ros_cv')],
-    ['Respiratory',v('ros_resp')],['Gastrointestinal',v('ros_gi')],['Genitourinary',v('ros_gu')],
-    ['Musculoskeletal',v('ros_msk')],['Neurological',v('ros_neuro')],['Psychiatric',v('ros_psych')],
-    ['Skin / Integumentary',v('ros_skin')],['Endocrine',v('ros_endo')],
-    ['Hematologic / Lymphatic',v('ros_heme')],['Allergic / Immunologic',v('ros_allergy')],
-    ['Reproductive / OB-GYN',v('ros_repro')],
-  ];
-  const medRows=meds.length
-    ?meds.map(m=>`<tr><td>${e(m.name)}</td><td>${e(m.dose)}</td><td>${e(m.route)}</td><td>${e(m.freq)}</td><td>${e(m.indication)}</td><td>${e(m.prescriber)}</td><td>${e(m.status)}</td><td>${e(m.notes)}</td></tr>`).join('')
-    :'<tr><td colspan="8" style="color:#888;font-style:italic;text-align:center">No medications documented</td></tr>';
-
-  const html=`
-    <div class="nv-hint">📋 <strong>To save as PDF on iPhone:</strong> Tap <strong>Print / Save PDF</strong> above → tap the Share icon in the bottom-left of the print preview → tap <strong>Save to Files</strong>.<br>On desktop: choose <strong>Save as PDF</strong> in the print dialog.</div>
-    <div class="nv-brand">Enfermería en Acción</div>
-    <div class="nv-subtitle">APRN Clinical SOAP Note</div>
-    <div class="nv-meta">${e(ptName)} &nbsp;·&nbsp; ${dtStr} &nbsp;·&nbsp; ${e(aprnName)}${v('aprn_role')?', '+e(v('aprn_role')):''}</div>
-    <div class="nv-disc">⚠ FOR PRACTICE / EDUCATIONAL PURPOSES ONLY — NOT AN OFFICIAL MEDICAL RECORD</div>
-
-    <div class="nv-section">Patient Information</div>
-    ${fld('Patient Name',ptName)} ${fld('Date of Birth',dobStr)}
-    ${fld('MRN',v('pt_mrn')||'—')} ${fld('Room / Bed',v('pt_room')||'—')}
-    ${fld('Insurance',v('pt_insurance')||'—')} ${fld('Code Status',v('pt_code')||'—')}
-    ${fld('Visit Type',v('visit_type')||'—')} ${fld('Encounter Setting',v('encounter_setting')||'—')}
-    ${fld('APRN',aprnName+(v('aprn_role')?', '+v('aprn_role'):''))} ${fld('Collaborating Physician',v('collab_md')||'—')}
-    ${fld('Date & Time',dtStr)}
-
-    <div class="nv-section">S — Subjective</div>
-    <div class="nv-sub">Chief Complaint</div><div class="nv-field nv-val">${e(v('s_complaint'))}</div>
-    <div class="nv-sub">History of Present Illness</div><div class="nv-field nv-val">${e(v('s_hpi'))}</div>
-    ${fld('Pain Scale',`${pain}/10${v('s_pain_loc')?' · Location: '+v('s_pain_loc'):''}${v('s_pain_quality')?' · Quality: '+v('s_pain_quality'):''}`)}
-    ${fld('Allergies',v('s_allergies')||'NKDA')}
-    <div class="nv-sub">Past Medical / Surgical / Psychiatric History</div><div class="nv-field nv-val">${e(v('s_pmh'))}</div>
-    ${fld('Family History',v('s_fhx')||'—')} ${fld('Social History',v('s_shx')||'—')}
-    <div class="nv-sub">Review of Systems</div>
-    ${rosRows.map(([l,val])=>fld(l,val||'Not reviewed')).join('')}
-
-    <div class="nv-section">O — Objective</div>
-    <div class="nv-sub">Vital Signs</div>
-    ${fld('Blood Pressure',v('v_bp')||'—')} ${fld('Heart Rate',v('v_hr')?v('v_hr')+' bpm':'—')}
-    ${fld('Respiratory Rate',v('v_rr')?v('v_rr')+' breaths/min':'—')} ${fld('Temperature',v('v_temp')?v('v_temp')+' °F':'—')}
-    ${fld('SpO₂',v('v_spo2')?v('v_spo2')+'%':'—')} ${fld('Weight',v('v_weight')?v('v_weight')+' kg':'—')}
-    ${fld('Height',v('v_height')?v('v_height')+' cm':'—')} ${fld('BMI',v('v_bmi')||'—')}
-    ${fld('GCS',v('v_gcs')||'—')} ${fld('Blood Glucose',v('v_glucose')||'—')}
-    <div class="nv-sub">Labs & Diagnostics</div><div class="nv-field nv-val">${e(v('o_labs'))}</div>
-    ${fld('IV Access / Lines',v('o_iv')||'—')} ${fld('Intake & Output',v('o_io')||'—')}
-
-    <div class="nv-section">Head-to-Toe Physical Exam</div>
-    ${HTT.map(s=>`<div class="nv-sub">${s.label}</div><div class="nv-field nv-val">${e(v(s.id)||'Not documented')}</div>`).join('')}
-
-    <div class="nv-section">Medication Reconciliation</div>
-    <table class="nv-table"><thead><tr><th>Medication</th><th>Dose</th><th>Route</th><th>Frequency</th><th>Indication</th><th>Prescriber</th><th>Status</th><th>Notes</th></tr></thead><tbody>${medRows}</tbody></table>
-    ${fld('OTC / Herbal / Supplements',v('med_otc')||'—')}
-    <div class="nv-sub">Reconciliation Notes</div><div class="nv-field nv-val">${e(v('med_notes'))}</div>
-
-    <div class="nv-section">A — Assessment</div>
-    <div class="nv-sub">Differential Diagnoses</div><div class="nv-field nv-val">${e(v('a_ddx'))}</div>
-    <div class="nv-sub">Primary Diagnoses / ICD-10</div><div class="nv-field nv-val">${e(v('a_dx'))}</div>
-    <div class="nv-sub">Clinical Reasoning & MDM</div><div class="nv-field nv-val">${e(v('a_reasoning'))}</div>
-    <div class="nv-sub">Patient Response to Treatment</div><div class="nv-field nv-val">${e(v('a_response'))}</div>
-
-    <div class="nv-section">P — Plan</div>
-    <div class="nv-sub">New Orders / Prescriptions</div><div class="nv-field nv-val">${e(v('p_orders'))}</div>
-    <div class="nv-sub">Diagnostic Orders</div><div class="nv-field nv-val">${e(v('p_diag'))}</div>
-    <div class="nv-sub">Interventions & Procedures</div><div class="nv-field nv-val">${e(v('p_interventions'))}</div>
-    <div class="nv-sub">Patient / Family Education</div><div class="nv-field nv-val">${e(v('p_edu'))}</div>
-    ${fld('Follow-Up Timeframe',v('p_followup_time')||'—')} ${fld('Referrals / Consults',v('p_referrals')||'—')}
-    <div class="nv-sub">Ongoing Plan & Goals</div><div class="nv-field nv-val">${e(v('p_followup'))}</div>
-    <div class="nv-sub">Additional Notes</div><div class="nv-field nv-val">${e(v('p_notes'))}</div>
-
-    <div class="nv-sig">
-      <div><b>Electronically signed:</b> ${e(aprnName)}${v('aprn_role')?', '+e(v('aprn_role')):''}</div>
-      <div><b>Date / Time:</b> ${dtStr}</div>
-      ${v('collab_md')?`<div><b>Collaborating Physician:</b> ${e(v('collab_md'))}</div>`:''}
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="section-tag" style="color:#7dd3fc">Contacto</div>
+    <div class="section-title">Contáctanos</div>
+    <p class="section-sub">¿Tienes preguntas, ideas o deseas colaborar? Nos encantaría saber de ti.</p>
+    <div class="contact-card">
+      <div class="contact-item">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        ocapella@gmail.com
+      </div>
+      <div class="contact-item">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Puerto Rico
+      </div>
+      <div class="contact-item">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Respuesta en 24–48 horas
+      </div>
     </div>
-    <div class="nv-footer">⚠ FOR PRACTICE / EDUCATIONAL PURPOSES ONLY — Not an official medical record — Enfermería en Acción</div>`;
+  </div>
+</section>
 
-  document.getElementById('note-view-inner').innerHTML = html;
-  document.getElementById('note-view').style.display = 'block';
-  document.getElementById('note-view').scrollTop = 0;
-  document.body.style.overflow = 'hidden';
-}
-</script>
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 <span>Enfermería en Acción</span> · Todos los derechos reservados · Solo para fines educativos y de práctica</p>
+</footer>
+
 </body>
 </html>
