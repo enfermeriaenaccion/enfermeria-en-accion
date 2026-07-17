@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen Diagnóstico · Reválida de Enfermería (NCLEX-RN)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,500&family=Spline+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F6F9;
+    --paper:#FFFFFF;
+    --ink:#1A1A2E;
+    --ink-soft:#5A6A80;
+    --teal:#1A4A7A;
+    --teal-2:#2C5F9E;
+    --line:#DDE3EE;
+    --green:#1A7A4A;
+    --green-bg:#E8F7EF;
+    --amber:#C07800;
+    --amber-bg:#FFF3CD;
+    --red:#C0392B;
+    --red-bg:#FBEAEA;
+    --shadow:0 1px 2px rgba(26,74,122,.06),0 12px 32px -12px rgba(26,74,122,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Spline Sans',sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(circle at 12% 8%, rgba(26,74,122,.06), transparent 40%),radial-gradient(circle at 88% 92%, rgba(44,95,158,.05), transparent 42%);
+    min-height:100vh;
+  }
+
+  /* TOP BAR */
+  .topbar-app{display:flex;align-items:center;gap:12px;padding:14px 20px;max-width:860px;margin:0 auto}
+  .btn-home{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;background:var(--paper);border:1px solid var(--line);color:var(--teal);text-decoration:none;flex-shrink:0;box-shadow:var(--shadow)}
+  .btn-home:hover{background:#fff;border-color:var(--teal-2)}
+  .topbar-app .brand{font-family:'Fraunces',serif;font-weight:700;color:var(--teal);font-size:1.05rem}
+  .topbar-app .brand span{display:block;font-family:'Spline Sans',sans-serif;font-weight:500;font-size:.74rem;color:var(--ink-soft)}
+
+  .wrap{max-width:860px;margin:0 auto;padding:0 20px 80px}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:34px;}
+  h1,h2,h3{font-family:'Fraunces',serif;letter-spacing:-.01em;line-height:1.1;color:var(--teal)}
+  .eyebrow{font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--teal-2);font-weight:600;margin-bottom:14px}
+  .muted{color:var(--ink-soft)}
+
+  /* ---------- WELCOME ---------- */
+  #welcome h1{font-size:2.5rem;font-weight:800;margin-bottom:10px}
+  #welcome .lead{font-size:1.12rem;color:var(--ink-soft);max-width:60ch;margin-bottom:26px}
+  .areas{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:22px 0 28px}
+  .area-chip{display:flex;align-items:center;gap:10px;font-size:.92rem;background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+  .dot{width:10px;height:10px;border-radius:50%;flex:none;background:var(--teal-2)}
+  .field{margin:6px 0 24px}
+  .field label{display:block;font-weight:600;margin-bottom:7px;font-size:.95rem}
+  .field input{width:100%;max-width:380px;font:inherit;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+  .field input:focus{outline:none;border-color:var(--teal-2);box-shadow:0 0 0 3px rgba(44,95,158,.13)}
+  .note{font-size:.86rem;background:var(--amber-bg);border:1px solid #f0deab;color:#7A5310;border-radius:12px;padding:12px 15px;margin-bottom:8px}
+
+  .btn{font:inherit;font-weight:600;cursor:pointer;border:none;border-radius:12px;padding:14px 26px;font-size:1rem;transition:transform .12s ease,box-shadow .12s ease,background .15s}
+  .btn-primary{background:var(--teal);color:#fff}
+  .btn-primary:hover{background:var(--teal-2);transform:translateY(-1px);box-shadow:0 8px 20px -8px rgba(26,74,122,.5)}
+  .btn-ghost{background:transparent;color:var(--teal);border:1px solid var(--line)}
+  .btn-ghost:hover{background:#fff;border-color:var(--teal-2)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+
+  /* ---------- EXAM ---------- */
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:14px}
+  .q-count{font-size:.85rem;font-weight:600;color:var(--teal-2);letter-spacing:.04em}
+  .cat-tag{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-soft);background:#fff;border:1px solid var(--line);padding:5px 11px;border-radius:999px}
+  .progress{height:8px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-bottom:30px}
+  .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--teal-2),var(--green));border-radius:99px;transition:width .35s ease}
+  .q-text{font-family:'Fraunces',serif;font-size:1.42rem;font-weight:600;color:var(--ink);line-height:1.32;margin-bottom:22px}
+  .opt{display:flex;align-items:flex-start;gap:13px;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:15px 17px;margin-bottom:12px;cursor:pointer;font:inherit;font-size:1rem;color:var(--ink);transition:border-color .14s,background .14s,transform .1s}
+  .opt:hover{border-color:var(--teal-2);transform:translateX(2px)}
+  .opt .mark{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:700;font-size:.85rem;color:var(--ink-soft);transition:all .14s}
+  .opt.sel{border-color:var(--teal);background:#eef3fb}
+  .opt.sel .mark{background:var(--teal);border-color:var(--teal);color:#fff}
+  .nav{display:flex;justify-content:space-between;margin-top:26px}
+
+  /* ---------- RESULTS ---------- */
+  #results h1{font-size:2.1rem;font-weight:800;margin-bottom:4px}
+  .score-hero{display:flex;flex-wrap:wrap;align-items:center;gap:26px;background:linear-gradient(135deg,#0d2d4f,var(--teal) 55%,var(--teal-2));color:#fff;border-radius:18px;padding:28px 30px;margin:20px 0 28px}
+  .ring{--p:0;width:118px;height:118px;flex:none;border-radius:50%;display:grid;place-items:center;
+    background:conic-gradient(#fff calc(var(--p)*1%), rgba(255,255,255,.22) 0);}
+  .ring > div{width:90px;height:90px;border-radius:50%;background:var(--teal);display:grid;place-items:center;text-align:center}
+  .ring b{font-family:'Fraunces',serif;font-size:1.7rem;line-height:1;display:block}
+  .ring span{font-size:.68rem;letter-spacing:.06em;opacity:.85}
+  .hero-txt h2{color:#fff;font-size:1.4rem;margin-bottom:6px}
+  .hero-txt p{opacity:.9;font-size:.97rem;max-width:42ch}
+
+  .legend{display:flex;flex-wrap:wrap;gap:16px;margin:0 0 18px;font-size:.84rem;color:var(--ink-soft)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+
+  .bar-row{margin-bottom:15px}
+  .bar-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;gap:10px}
+  .bar-head .name{font-weight:600;font-size:.96rem}
+  .bar-head .pct{font-family:'Fraunces',serif;font-weight:600;font-size:1.02rem}
+  .bar{height:13px;background:#e2e8f0;border-radius:99px;overflow:hidden}
+  .bar > i{display:block;height:100%;border-radius:99px;width:0;transition:width .9s cubic-bezier(.2,.7,.2,1)}
+
+  .priolist{margin:26px 0 8px}
+  .prio{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-left-width:5px;border-radius:12px;padding:15px 17px;margin-bottom:11px}
+  .prio .lvl{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:3px 9px;border-radius:99px;white-space:nowrap;margin-top:2px}
+  .prio h4{font-family:'Spline Sans',sans-serif;font-size:1rem;margin-bottom:3px;color:var(--ink)}
+  .prio p{font-size:.9rem;color:var(--ink-soft);margin:0}
+
+  .hidden{display:none}
+  .fade{animation:fade .4s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  footer{text-align:center;font-size:.8rem;color:var(--ink-soft);margin-top:30px}
+  @media print{.btn,.note,.topbar-app{display:none}body{background:#fff}.card{box-shadow:none;border:none}}
+
+  .status-msg{font-size:.85rem;color:var(--green);display:none;text-align:center;margin-top:12px;font-weight:600}
+  .future-box{background:#eef3fb;border:1px solid #c8d4e8;border-left:5px solid var(--teal);border-radius:12px;padding:16px 18px;margin-top:24px}
+  .future-box h3{font-size:1rem;color:var(--teal);margin-bottom:5px}
+  .future-box p{font-size:.9rem;color:var(--ink-soft);margin:0}
+
+  @media(max-width:560px){.card{padding:22px}.q-text{font-size:1.22rem}#welcome h1{font-size:2rem}}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar-app">
+  <a href="/enfermeria-en-accion/" class="btn-home" title="Regresar al inicio">
+    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+  </a>
+  <div class="brand">Enfermería en Acción<span>Examen Diagnóstico · Reválida (NCLEX-RN)</span></div>
+</div>
+
+<div class="wrap">
+
+  <!-- ============ WELCOME ============ -->
+  <section id="welcome" class="card fade">
+    <div class="eyebrow">Repaso · Reválida de Enfermería · Puerto Rico</div>
+    <h1>Examen Diagnóstico NCLEX-RN</h1>
+    <p class="lead">Una evaluación corta de 32 preguntas que identifica <strong>en qué áreas necesitas concentrar tu estudio</strong>. No es una nota: es un mapa. Al terminar recibirás tu perfil por categoría del plan de prueba del NCLEX-RN.</p>
+
+    <div class="areas" id="areaChips"></div>
+
+    <div class="field">
+      <label for="name">Tu nombre (opcional, para personalizar el informe)</label>
+      <input id="name" type="text" placeholder="Ej. María Rivera" autocomplete="off">
+    </div>
+
+    <p class="note"><strong>Nota:</strong> el NCLEX-RN se administra en inglés. Este diagnóstico está en español para medir tu dominio del <em>contenido</em> sin la barrera del idioma; recomiéndale a tu grupo practicar también con preguntas en inglés.</p>
+
+    <div style="margin-top:20px">
+      <button class="btn btn-primary" onclick="startExam()">Comenzar diagnóstico →</button>
+    </div>
+  </section>
+
+  <!-- ============ EXAM ============ -->
+  <section id="exam" class="card hidden">
+    <div class="topbar">
+      <span class="q-count" id="qCount">Pregunta 1 de 32</span>
+      <span class="cat-tag" id="catTag">Área</span>
+    </div>
+    <div class="progress"><i id="progBar" style="width:3%"></i></div>
+    <div class="q-text" id="qText"></div>
+    <div id="opts"></div>
+    <div class="nav">
+      <button class="btn btn-ghost" id="backBtn" onclick="prevQ()">← Anterior</button>
+      <button class="btn btn-primary" id="nextBtn" onclick="nextQ()" disabled>Siguiente →</button>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS ============ -->
+  <section id="results" class="card hidden">
+    <div class="eyebrow" id="resWho">Perfil de necesidades de estudio</div>
+    <h1>Tu diagnóstico</h1>
+
+    <div class="score-hero">
+      <div class="ring" id="ring"><div><b id="scorePct">0%</b><span>GLOBAL</span></div></div>
+      <div class="hero-txt">
+        <h2 id="scoreHeadline">Resultado global</h2>
+        <p id="scoreSummary"></p>
+      </div>
+    </div>
+
+    <h3 style="font-size:1.2rem;margin-bottom:12px">Desempeño por área</h3>
+    <div class="legend">
+      <span><i style="background:var(--red)"></i> Prioridad alta · menos de 60%</span>
+      <span><i style="background:var(--amber)"></i> Reforzar · 60–79%</span>
+      <span><i style="background:var(--green)"></i> Dominado · 80% o más</span>
+    </div>
+    <div id="bars"></div>
+
+    <div class="priolist">
+      <h3 style="font-size:1.2rem;margin-bottom:14px">Plan de estudio sugerido</h3>
+      <div id="prios"></div>
+    </div>
+
+    <div class="future-box">
+      <h3>Próximamente: práctica adaptativa</h3>
+      <p>Este diagnóstico gratuito ofrece una evaluación general. Una versión futura ajustará la dificultad según tu desempeño y desarrollará una ruta de estudio personalizada.</p>
+    </div>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:30px;align-items:center">
+      <button class="btn btn-primary" onclick="printReport()">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="vertical-align:-3px;margin-right:6px"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h4a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+        Imprimir o guardar como PDF
+      </button>
+      <button class="btn btn-ghost" onclick="restart()">Empezar de nuevo</button>
+    </div>
+    <p class="muted" style="font-size:.82rem;margin-top:12px">En la ventana de impresión selecciona <strong>Guardar como PDF</strong>. En móvil también podrás guardarlo en Archivos o compartirlo.</p>
+    <div class="status-msg" id="status_msg"></div>
+  </section>
+
+  <footer>Herramienta de diagnóstico para repaso de reválida · Estructurada según el plan de prueba del NCLEX-RN · Enfermería en Acción</footer>
+</div>
+
+<script>
+/* ---------- CATEGORÍAS (NCLEX-RN test plan) ---------- */
+const CATS = {
+  MC:  {name:"Manejo del Cuidado",                 color:"#1A4A7A"},
+  SCI: {name:"Seguridad y Control de Infecciones", color:"#2C5F9E"},
+  PMS: {name:"Promoción y Mantenimiento de Salud", color:"#3D7AB5"},
+  IP:  {name:"Integridad Psicosocial",             color:"#5C3D9E"},
+  CBC: {name:"Cuidado Básico y Confort",           color:"#1A7A4A"},
+  TF:  {name:"Terapias Farmacológicas",            color:"#C07800"},
+  RR:  {name:"Reducción del Riesgo",               color:"#7A4A1A"},
+  AF:  {name:"Adaptación Fisiológica",             color:"#C0392B"}
+};
+
+/* ---------- BANCO DE PREGUNTAS (32 = 4 por área) ---------- */
+const QUESTIONS = [
+/* Manejo del Cuidado */
+{c:"MC", q:"La enfermera recibe el reporte de cuatro pacientes. ¿A cuál debe evaluar PRIMERO?", o:["Postoperatorio día 2 que pide analgésico","Paciente con EPOC y saturación de 91% en aire ambiente","Paciente con dificultad respiratoria súbita y dolor torácico","Diabético que espera el desayuno"], a:2, r:"Un cambio agudo en la vía aérea/respiración/circulación (ABC) tiene prioridad sobre situaciones estables o esperadas."},
+{c:"MC", q:"¿Cuál tarea puede delegar con seguridad a un asistente de enfermería sin licencia (PCT)?", o:["Educar al paciente sobre su nueva insulina","Tomar signos vitales de un paciente estable","Evaluar una herida quirúrgica","Administrar medicamentos orales"], a:1, r:"La valoración, la educación y la administración de medicamentos son responsabilidad del RN. Tareas estandarizadas en pacientes estables sí se delegan."},
+{c:"MC", q:"Un familiar llama y pide información sobre el estado de un paciente. ¿Qué debe hacer la enfermera?", o:["Darla si es el cónyuge","Verificar la identidad y confirmar que el paciente autorizó compartir información","Negarse a hablar con cualquier familiar","Referir siempre al médico"], a:1, r:"La confidencialidad (HIPAA) exige verificar la identidad y la autorización del paciente antes de divulgar información."},
+{c:"MC", q:"Antes de cirugía el paciente dice que no entiende el procedimiento, pero el consentimiento ya está firmado. ¿Qué acción es la apropiada?", o:["Proceder porque ya firmó","Explicar ella misma el procedimiento en detalle","Notificar al cirujano para que aclare antes de proceder","Cancelar la cirugía"], a:2, r:"El consentimiento informado es responsabilidad del médico. Si el paciente no comprende, el consentimiento no es válido y se notifica al cirujano."},
+/* Seguridad y Control de Infecciones */
+{c:"SCI", q:"Paciente admitido con sospecha de tuberculosis pulmonar activa. ¿Qué precaución de aislamiento se requiere?", o:["Contacto","Gotas (droplet)","Aérea (airborne): habitación de presión negativa y respirador N95","Estándar solamente"], a:2, r:"La tuberculosis se transmite por núcleos de gotas que permanecen suspendidos: requiere precauciones aéreas, presión negativa y N95."},
+{c:"SCI", q:"¿Cuál intervención reduce MEJOR el riesgo de caídas en un adulto mayor hospitalizado?", o:["Cama en posición baja con freno y artículos al alcance","Restringir al paciente a la cama","Mantener las luces apagadas para que descanse","Dejarlo solo en el baño por privacidad"], a:0, r:"Una cama baja y frenada con lo necesario al alcance reduce caídas sin recurrir a restricciones, que aumentan el riesgo de lesión."},
+{c:"SCI", q:"¿En cuál situación es indispensable lavarse las manos con agua y jabón en lugar de usar gel de alcohol?", o:["Antes de entrar a la habitación","Después de atender a un paciente con Clostridioides difficile","Antes de un procedimiento limpio","Después de quitarse los guantes en cuidado de rutina"], a:1, r:"Las esporas de C. difficile no se eliminan con alcohol; requieren fricción mecánica con agua y jabón."},
+{c:"SCI", q:"Antes de administrar un medicamento, ¿cuál es la forma correcta de identificar al paciente?", o:["Llamarlo por su nombre y que responda","Confirmar el número de habitación","Usar dos identificadores, p. ej. nombre y fecha de nacimiento","Preguntar a la familia"], a:2, r:"El estándar de seguridad requiere dos identificadores únicos; el número de cuarto no es válido."},
+/* Promoción y Mantenimiento de Salud */
+{c:"PMS", q:"Según las pautas de desarrollo, ¿a qué edad se espera que un niño camine solo de forma independiente?", o:["6 meses","9 meses","12–15 meses","24 meses"], a:2, r:"La marcha independiente típicamente aparece entre los 12 y 15 meses."},
+{c:"PMS", q:"Para un adulto de 50 años sin factores de riesgo, ¿cuál tamizaje es apropiado?", o:["Colonoscopía de cernimiento para cáncer colorrectal","Mamografía anual desde los 30","No requiere ningún tamizaje","Densitometría ósea inmediata"], a:0, r:"El cernimiento de cáncer colorrectal está indicado a esta edad; la colonoscopía es una opción aceptada."},
+{c:"PMS", q:"Una embarazada pregunta por el ácido fólico. La enfermera explica que su propósito principal es:", o:["Prevenir solo la anemia materna","Reducir el riesgo de defectos del tubo neural","Aumentar el peso del bebé","Prevenir las náuseas"], a:1, r:"El ácido fólico periconcepcional reduce los defectos del tubo neural (p. ej., espina bífida)."},
+{c:"PMS", q:"Según Erikson, la tarea psicosocial principal del adolescente es:", o:["Confianza vs. desconfianza","Identidad vs. confusión de roles","Intimidad vs. aislamiento","Iniciativa vs. culpa"], a:1, r:"La adolescencia corresponde a la etapa de identidad vs. confusión de roles."},
+/* Integridad Psicosocial */
+{c:"IP", q:"Un paciente recién diagnosticado con cáncer dice: «No sé cómo voy a seguir con esto». ¿Cuál respuesta es terapéutica?", o:["«No se preocupe, todo va a salir bien»","«Debería pensar positivo»","«Esto debe ser muy difícil para usted. Cuénteme qué le preocupa»","«Muchas personas superan el cáncer»"], a:2, r:"La comunicación terapéutica valida la emoción y abre la exploración; las frases tranquilizadoras vacías la cierran."},
+{c:"IP", q:"Paciente con consumo intenso de alcohol es admitido. ¿Cuál signo temprano de abstinencia debe vigilar la enfermera?", o:["Bradicardia","Temblor, ansiedad e hipertensión","Hipotermia","Sedación profunda"], a:1, r:"La abstinencia alcohólica produce hiperactividad autonómica: temblor, ansiedad, taquicardia e hipertensión."},
+{c:"IP", q:"Un paciente con un diagnóstico grave insiste en que «el laboratorio se equivocó». ¿Qué mecanismo de defensa demuestra?", o:["Proyección","Negación","Desplazamiento","Regresión"], a:1, r:"Rechazar la realidad de un diagnóstico es negación."},
+{c:"IP", q:"¿Cuál es la PRIORIDAD al atender a un paciente que expresa ideación suicida con un plan?", o:["Construir confianza a largo plazo","Garantizar la seguridad inmediata y la supervisión","Explorar las causas de su depresión","Referir a terapia ambulatoria"], a:1, r:"Ante un plan suicida, la seguridad física inmediata y la supervisión continua son la prioridad."},
+/* Cuidado Básico y Confort */
+{c:"CBC", q:"Un paciente con enfermedad renal crónica debe limitar principalmente:", o:["Carbohidratos","Potasio y fósforo","Vitamina C","Fibra"], a:1, r:"En la ERC se restringen potasio y fósforo porque el riñón no los excreta adecuadamente."},
+{c:"CBC", q:"Para prevenir úlceras por presión en un paciente encamado, la enfermera debe:", o:["Reposicionar al menos cada 2 horas","Reposicionar cada 8 horas","Mantener la cabecera siempre a 90°","Masajear las prominencias óseas enrojecidas"], a:0, r:"Reposicionar cada 2 horas redistribuye la presión. Masajear zonas enrojecidas está contraindicado."},
+{c:"CBC", q:"Para prevenir infecciones urinarias asociadas a catéter, la enfermera debe:", o:["Mantener la bolsa por encima de la vejiga","Mantener sistema cerrado y la bolsa por debajo del nivel de la vejiga","Desconectar la sonda para vaciarla","Pinzar la sonda de rutina"], a:1, r:"El drenaje por gravedad con sistema cerrado y bolsa bajo el nivel vesical previene el reflujo y la infección."},
+{c:"CBC", q:"Un paciente reporta dolor de 8/10. ¿Cuál es la acción INICIAL apropiada?", o:["Asumir que exagera","Aceptar el reporte y valorar el dolor","Esperar a confirmarlo con signos vitales","Administrar un placebo"], a:1, r:"El dolor es lo que el paciente dice que es; el primer paso es creerle y valorarlo."},
+/* Terapias Farmacológicas */
+{c:"TF", q:"Se ordenan 500 mg de un medicamento. Disponible: tabletas de 250 mg. ¿Cuántas tabletas administra?", o:["1","2","0.5","4"], a:1, r:"500 mg ÷ 250 mg por tableta = 2 tabletas."},
+{c:"TF", q:"¿Cuál hallazgo sugiere toxicidad por digoxina?", o:["Hipertensión","Náuseas, visión amarillenta y bradicardia","Fiebre","Poliuria"], a:1, r:"Anorexia/náuseas, alteraciones visuales (halos amarillos) y bradicardia son signos clásicos de toxicidad digitálica."},
+{c:"TF", q:"Un paciente toma litio. ¿Qué educación es PRIORITARIA?", o:["Restringir todos los líquidos","Mantener ingesta adecuada y constante de sodio y líquidos","Evitar todo ejercicio","Tomarlo solo cuando se sienta ansioso"], a:1, r:"Los cambios en sodio y líquidos alteran los niveles de litio y pueden causar toxicidad."},
+{c:"TF", q:"Antes de administrar cloruro de potasio (KCl) intravenoso, la enfermera sabe que:", o:["Se puede dar en bolo IV rápido","Nunca se administra en bolo IV directo; se diluye e infunde lento","Se administra intramuscular","No requiere monitoreo"], a:1, r:"El KCl en bolo IV directo puede provocar paro cardíaco; siempre se diluye y se infunde lentamente con monitoreo."},
+/* Reducción del Riesgo */
+{c:"RR", q:"¿Cuál valor de potasio sérico requiere notificación INMEDIATA?", o:["4.0 mEq/L","3.8 mEq/L","6.5 mEq/L","4.5 mEq/L"], a:2, r:"El rango normal es 3.5–5.0 mEq/L; 6.5 es hipercalemia con riesgo de arritmias letales."},
+{c:"RR", q:"Antes de una arteriografía con medio de contraste, ¿qué dato es PRIORITARIO verificar?", o:["Alergia al yodo/mariscos y función renal","La última comida hace una semana","El color de la orina","La preferencia de música"], a:0, r:"El contraste yodado puede causar reacción alérgica y nefrotoxicidad; se verifica alergia y función renal."},
+{c:"RR", q:"Un paciente con warfarina tiene un INR de 5.5. ¿Qué indica este valor?", o:["Está en rango terapéutico","Riesgo elevado de sangrado","Necesita más warfarina","Riesgo de coágulos"], a:1, r:"El rango terapéutico suele ser 2–3; un INR de 5.5 indica anticoagulación excesiva y alto riesgo de hemorragia."},
+{c:"RR", q:"Tras una toracocentesis, ¿cuál hallazgo debe reportar de inmediato la enfermera?", o:["Alivio de la disnea","Dificultad respiratoria súbita y disminución de ruidos respiratorios","Un punto pequeño de sangre en el apósito","Tos leve"], a:1, r:"La disnea súbita con ruidos respiratorios disminuidos sugiere neumotórax, una complicación que requiere acción inmediata."},
+/* Adaptación Fisiológica */
+{c:"AF", q:"Un paciente desarrolla shock anafiláctico tras un antibiótico. ¿Cuál es el medicamento de elección INMEDIATO?", o:["Difenhidramina oral","Epinefrina","Acetaminofén","Furosemida"], a:1, r:"La epinefrina es el tratamiento de primera línea de la anafilaxia por su efecto sobre vía aérea y presión arterial."},
+{c:"AF", q:"¿Cuál es un signo de hipovolemia (deshidratación) en un adulto?", o:["Hipertensión y bradicardia","Taquicardia, hipotensión y mucosas secas","Edema y aumento de peso","Bradipnea"], a:1, r:"La hipovolemia produce taquicardia compensatoria, hipotensión y signos de sequedad."},
+{c:"AF", q:"Un paciente con infarto agudo recibe nitroglicerina. ¿Qué efecto secundario debe vigilar la enfermera?", o:["Hipertensión","Hipotensión y cefalea","Estreñimiento","Hiperglucemia"], a:1, r:"La nitroglicerina es vasodilatadora: causa hipotensión y cefalea con frecuencia."},
+{c:"AF", q:"Un diabético está sudoroso, tembloroso y confundido; glucosa 50 mg/dL y puede tragar. ¿Acción inicial?", o:["Administrar insulina","Dar 15 g de carbohidrato de acción rápida","Esperar y volver a medir en una hora","Dejarlo NPO"], a:1, r:"Ante hipoglucemia en un paciente consciente, aplicar la «regla del 15»: 15 g de carbohidrato rápido y reevaluar."}
+];
+
+/* ---------- ESTADO ---------- */
+let idx=0;
+const answers=new Array(QUESTIONS.length).fill(null);
+let userName="";
+let RESULT=null;
+
+/* recomendaciones de estudio por área (usadas en pantalla y en el informe) */
+const TIPS={
+  MC:"Practica preguntas de priorización (ABC, Maslow) y delegación: quién hace qué y qué se ve primero.",
+  SCI:"Memoriza los tipos de aislamiento, el EPP de cada uno y las medidas contra caídas y errores de medicación.",
+  PMS:"Repasa hitos del desarrollo, inmunizaciones, etapas de Erikson y guías de tamizaje por edad.",
+  IP:"Estudia comunicación terapéutica, mecanismos de defensa, crisis y manejo de abstinencia y riesgo de suicidio.",
+  CBC:"Refuerza nutrición por condición, prevención de úlceras, cuidado de catéteres y manejo del dolor y el descanso.",
+  TF:"Practica cálculo de dosis y aprende los efectos tóxicos y la educación de medicamentos de alto riesgo (digoxina, litio, KCl, anticoagulantes).",
+  RR:"Domina los valores de laboratorio normales y críticos, y los cuidados antes y después de procedimientos diagnósticos.",
+  AF:"Estudia el manejo de emergencias (anafilaxia, hipoglucemia), desequilibrios hidroelectrolíticos y complicaciones agudas."
+};
+
+/* render area chips on welcome */
+(function(){
+  const box=document.getElementById('areaChips');
+  Object.values(CATS).forEach(c=>{
+    const d=document.createElement('div');d.className='area-chip';
+    d.innerHTML=`<span class="dot" style="background:${c.color}"></span>${c.name}`;
+    box.appendChild(d);
+  });
+})();
+
+function show(id){['welcome','exam','results'].forEach(s=>document.getElementById(s).classList.add('hidden'));
+  const el=document.getElementById(id);el.classList.remove('hidden');el.classList.remove('fade');void el.offsetWidth;el.classList.add('fade');
+  window.scrollTo({top:0,behavior:'instant'});}
+
+function startExam(){userName=document.getElementById('name').value.trim();idx=0;show('exam');renderQ();}
+
+function renderQ(){
+  const q=QUESTIONS[idx];
+  document.getElementById('qCount').textContent=`Pregunta ${idx+1} de ${QUESTIONS.length}`;
+  document.getElementById('catTag').textContent=CATS[q.c].name;
+  document.getElementById('progBar').style.width=((idx+1)/QUESTIONS.length*100)+'%';
+  document.getElementById('qText').textContent=q.q;
+  const ob=document.getElementById('opts');ob.innerHTML='';
+  const letters=['A','B','C','D'];
+  q.o.forEach((opt,i)=>{
+    const b=document.createElement('button');b.className='opt'+(answers[idx]===i?' sel':'');
+    b.innerHTML=`<span class="mark">${letters[i]}</span><span>${opt}</span>`;
+    b.onclick=()=>{answers[idx]=i;renderQ();};
+    ob.appendChild(b);
+  });
+  document.getElementById('backBtn').style.visibility=idx===0?'hidden':'visible';
+  document.getElementById('nextBtn').disabled=answers[idx]===null;
+  document.getElementById('nextBtn').textContent=idx===QUESTIONS.length-1?'Ver mi diagnóstico →':'Siguiente →';
+}
+function nextQ(){if(answers[idx]===null)return;if(idx<QUESTIONS.length-1){idx++;renderQ();}else{finish();}}
+function prevQ(){if(idx>0){idx--;renderQ();}}
+
+function finish(){
+  /* score por categoría */
+  const tally={};Object.keys(CATS).forEach(k=>tally[k]={right:0,total:0});
+  let totalRight=0;
+  QUESTIONS.forEach((q,i)=>{tally[q.c].total++;if(answers[i]===q.a){tally[q.c].right++;totalRight++;}});
+  const globalPct=Math.round(totalRight/QUESTIONS.length*100);
+
+  /* hero */
+  document.getElementById('resWho').textContent = userName?`Perfil de necesidades · ${userName}`:'Perfil de necesidades de estudio';
+  document.getElementById('scorePct').textContent=globalPct+'%';
+  const ring=document.getElementById('ring');ring.style.setProperty('--p',globalPct);
+  let headline,summary;
+  if(globalPct>=80){headline='¡Vas muy bien encaminado!';summary='Tu base es sólida. Enfócate en pulir las áreas en ámbar y mantener el ritmo de práctica.';}
+  else if(globalPct>=60){headline='Buen punto de partida';summary='Tienes fundamentos, pero hay áreas clave por reforzar antes de la reválida. Mira tu plan abajo.';}
+  else{headline='Vamos a construir tu base';summary='Este diagnóstico revela varias áreas prioritarias. Con un plan enfocado, el progreso llega rápido.';}
+  document.getElementById('scoreHeadline').textContent=headline;
+  document.getElementById('scoreSummary').textContent=summary;
+
+  /* bars */
+  const bars=document.getElementById('bars');bars.innerHTML='';
+  const order=Object.keys(CATS).map(k=>({k,pct:tally[k].total?Math.round(tally[k].right/tally[k].total*100):0,...tally[k]}))
+                .sort((a,b)=>a.pct-b.pct);
+  function levelColor(p){return p<60?'var(--red)':p<80?'var(--amber)':'var(--green)';}
+  order.forEach((row,n)=>{
+    const div=document.createElement('div');div.className='bar-row';
+    div.innerHTML=`<div class="bar-head"><span class="name">${CATS[row.k].name}</span>
+      <span class="pct" style="color:${levelColor(row.pct)}">${row.pct}% · ${row.right}/${row.total}</span></div>
+      <div class="bar"><i style="background:${levelColor(row.pct)}"></i></div>`;
+    bars.appendChild(div);
+    setTimeout(()=>{div.querySelector('.bar > i').style.width=row.pct+'%';},120+n*70);
+  });
+
+  /* plan de estudio */
+  const prios=document.getElementById('prios');prios.innerHTML='';
+  const focus=order.filter(r=>r.pct<80);
+  if(focus.length===0){
+    const d=document.createElement('div');d.className='prio';d.style.borderLeftColor='var(--green)';
+    d.innerHTML=`<span class="lvl" style="background:var(--green-bg);color:#1E5E38">Excelente</span>
+      <div><h4>Todas las áreas en 80% o más</h4><p>Mantén la práctica con simulacros completos cronometrados y preguntas en inglés.</p></div>`;
+    prios.appendChild(d);
+  } else {
+    focus.forEach(r=>{
+      const high=r.pct<60;
+      const d=document.createElement('div');d.className='prio';
+      d.style.borderLeftColor=high?'var(--red)':'var(--amber)';
+      d.innerHTML=`<span class="lvl" style="background:${high?'var(--red-bg)':'var(--amber-bg)'};color:${high?'#8A2E22':'#7A5310'}">${high?'Prioridad alta':'Reforzar'}</span>
+        <div><h4>${CATS[r.k].name} — ${r.pct}%</h4><p>${TIPS[r.k]}</p></div>`;
+      prios.appendChild(d);
+    });
+  }
+
+  RESULT={globalPct, name:userName, date:new Date().toLocaleDateString('es-PR',{year:'numeric',month:'long',day:'numeric'}), headline, rows:order, focus};
+  show('results');
+}
+function restart(){idx=0;answers.fill(null);document.getElementById('name').value=userName;show('welcome');}
+
+/* ---------- GUARDAR / COMPARTIR INFORME (HTML, igual que la app SOAP) ---------- */
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function buildReportHTML(){
+  const rowsHTML = RESULT.rows.map(r=>{
+    const color = r.pct<60?'#c0392b':r.pct<80?'#c07800':'#1a7a4a';
+    return `<div class="rep-bar-row">
+      <div class="rep-bar-head"><span>${esc(CATS[r.k].name)}</span><span style="color:${color};font-weight:700">${r.pct}% (${r.right}/${r.total})</span></div>
+      <div class="rep-bar"><i style="width:${r.pct}%;background:${color}"></i></div>
+    </div>`;
+  }).join('');
+
+  const planHTML = RESULT.focus.length
+    ? RESULT.focus.map(r=>{
+        const high=r.pct<60;
+        return `<div class="rep-prio" style="border-left-color:${high?'#c0392b':'#c07800'}">
+          <span class="rep-lvl" style="background:${high?'#fbeaea':'#fff3cd'};color:${high?'#8a2e22':'#7a5310'}">${high?'Prioridad alta':'Reforzar'}</span>
+          <div><strong>${esc(CATS[r.k].name)} — ${r.pct}%</strong><p>${esc(TIPS[r.k])}</p></div>
+        </div>`;
+      }).join('')
+    : `<div class="rep-prio" style="border-left-color:#1a7a4a">
+        <span class="rep-lvl" style="background:#e8f7ef;color:#1e5e38">Excelente</span>
+        <div><strong>Todas las áreas en 80% o más</strong><p>Mantén simulacros completos cronometrados y práctica con preguntas en inglés.</p></div>
+      </div>`;
+
+  return `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico NCLEX-RN${RESULT.name?(' - '+esc(RESULT.name)):''}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;color:#1a1a2e;padding:1.2cm 1.5cm;line-height:1.6}
+.rep-brand{text-align:center;font-size:22pt;font-weight:bold;color:#1a4a7a;padding-bottom:8px;border-bottom:2.5px solid #1a4a7a;margin-bottom:6px}
+.rep-subtitle{text-align:center;font-size:12pt;color:#333;margin-bottom:4px}
+.rep-meta{text-align:center;font-size:10pt;color:#666;margin-bottom:18px}
+.rep-score{background:linear-gradient(135deg,#0d2d4f,#1a4a7a);color:#fff;border-radius:12px;padding:20px;text-align:center;margin-bottom:20px}
+.rep-score b{font-size:28pt;display:block}
+.rep-score span{font-size:11pt;opacity:.85}
+.rep-section{font-size:13pt;font-weight:bold;color:#1a4a7a;border-bottom:1.5px solid #1a4a7a;margin-top:20px;margin-bottom:10px;padding-bottom:3px;text-transform:uppercase}
+.rep-bar-row{margin-bottom:10px}
+.rep-bar-head{display:flex;justify-content:space-between;font-size:10.5pt;margin-bottom:4px}
+.rep-bar{height:10px;background:#e2e8f0;border-radius:99px;overflow:hidden}
+.rep-bar i{display:block;height:100%;border-radius:99px}
+.rep-prio{display:flex;gap:12px;align-items:flex-start;border:1px solid #dde3ee;border-left-width:5px;border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.rep-lvl{font-size:8.5pt;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 9px;border-radius:99px;white-space:nowrap}
+.rep-prio p{font-size:10pt;color:#5a6a80;margin-top:4px}
+.rep-future{background:#eef3fb;border:1px solid #c8d4e8;border-left:5px solid #1a4a7a;border-radius:10px;padding:12px 14px;margin-top:18px;font-size:9.5pt}
+.rep-note{font-size:8.5pt;color:#666;margin-top:14px;text-align:center}
+.rep-footer{margin-top:20px;font-size:8pt;color:#888;text-align:center;border-top:1px solid #eee;padding-top:8px}
+</style></head>
+<body>
+<div class="rep-brand">Enfermería en Acción</div>
+<div class="rep-subtitle">Diagnóstico · Reválida de Enfermería (NCLEX-RN)</div>
+<div class="rep-meta">${RESULT.name?esc(RESULT.name)+' · ':''}${RESULT.date}</div>
+<div class="rep-score"><b>${RESULT.globalPct}%</b><span>${esc(RESULT.headline)}</span></div>
+<div class="rep-section">Desempeño por área</div>
+${rowsHTML}
+<div class="rep-section">Plan de estudio sugerido</div>
+${planHTML}
+<div class="rep-future"><strong>Próximamente: práctica adaptativa.</strong> Una versión futura ajustará la dificultad según el desempeño y desarrollará una ruta personalizada de estudio.</div>
+<div class="rep-note">Este resultado es educativo y orientativo; no predice ni garantiza el desempeño en la reválida.</div>
+<div class="rep-footer">Herramienta de diagnóstico para repaso de reválida · Enfermería en Acción</div>
+</body></html>`;
+}
+
+function printReport(){
+  if(!RESULT){return;}
+  const fullHTML = buildReportHTML();
+  const msg = document.getElementById('status_msg');
+  const win=window.open('','_blank');
+  if(!win){
+    msg.textContent='Permite las ventanas emergentes para imprimir o guardar el informe.';
+    msg.style.display='block';
+    return;
+  }
+  win.document.open();
+  win.document.write(fullHTML);
+  win.document.close();
+  win.onload=()=>{win.focus();win.print();};
+}
+</script>
+</body>
+</html>
